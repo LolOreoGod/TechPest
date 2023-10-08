@@ -7,11 +7,25 @@ import javafx.stage.WindowEvent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.fxml.FXMLLoader;
+/**
+ * 
+ * @author Mengting Chang
+ * @author Dong
+ * @author
+ * @version 0.20, 10/7/23
+ * 
+ *
+ */
 
 
 public class Main extends Application {
 	static Boolean canExit = true;
 	@Override
+	/**
+	 * Loads GFX from MainMenu.fxml
+	 * On any close window request, check if window is allowed to exit
+	 * WE MIGHT NOT ALLOW WINDOW TO EXIT WHEN WE HAVE POP-UP OPEN
+	 */
 	public void start(Stage primaryStage) {
 		try {
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("MainMenu.fxml"));
@@ -20,9 +34,7 @@ public class Main extends Application {
 			primaryStage.setScene(scene);
 			primaryStage.show();
 			
-			
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
 				@Override
 				public void handle(WindowEvent event) {
 					if(!canExit) {
@@ -36,6 +48,11 @@ public class Main extends Application {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param closable Boolean to check if Main Menu can be closed
+	 * 
+	 */
 	public static void setClosable(boolean closable) {
 		if(closable) {
 			canExit = true;
@@ -44,6 +61,11 @@ public class Main extends Application {
 			canExit = false;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}

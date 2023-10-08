@@ -10,11 +10,14 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+/**
+ * 
+ * MainMenuController controls all popups that may occur
+ * It also controls closability during popups
+ *
+ */
 public class MainMenuController {
-	public void changeScene() throws Exception {
-		//NewProjectPage.display();
-		//Main.setClosable(false);
-	}
+
 	
 	@FXML Button newProject;
 	public void handleButtonAction(ActionEvent event) {
