@@ -1,4 +1,4 @@
-package Controllers;
+package controller;
 
 import application.Main;
 import javafx.event.ActionEvent;
@@ -23,7 +23,7 @@ public class MainMenuController {
 	public void handleButtonAction(ActionEvent event) {
 		try {
 			//OPENS POP UP WINDOW
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/application/NewProjectPageSB.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewProjectPageSB.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
 			stage.setTitle("New Project");
