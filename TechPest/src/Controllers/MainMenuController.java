@@ -22,6 +22,7 @@ public class MainMenuController {
 	@FXML Button newProject;
 	public void handleButtonAction(ActionEvent event) {
 		try {
+			//OPENS POP UP WINDOW
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/application/NewProjectPageSB.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();

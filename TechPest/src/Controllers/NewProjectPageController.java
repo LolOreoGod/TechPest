@@ -41,7 +41,7 @@ public class NewProjectPageController {
     public void submit(ActionEvent event) {
     	//TODO: Save information
     	Main.setClosable(true);
-    	Stage stage = (Stage) back.getScene().getWindow();
+    	Stage stage = (Stage) submit.getScene().getWindow();
     	stage.close();
     	
     }
