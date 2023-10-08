@@ -1,0 +1,37 @@
+package Controllers;
+
+import application.Main;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+public class MainMenuController {
+	public void changeScene() throws Exception {
+		//NewProjectPage.display();
+		//Main.setClosable(false);
+	}
+	
+	@FXML Button newProject;
+	public void handleButtonAction(ActionEvent event) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/application/NewProjectPageSB.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.setTitle("New Project");
+			stage.setScene(new Scene(root, 600, 600));
+			stage.initStyle(StageStyle.UTILITY);
+			stage.show();
+	
+			Main.setClosable(false);
+			stage.setOnCloseRequest(e-> Main.setClosable(true));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+}
