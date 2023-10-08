@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<HBox fx:id="mainBox" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/21" fx:controller="application.controller.MainController">
+   <children>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: azure;">
+         <children>
+            <Button layoutX="32.0" layoutY="101.0" mnemonicParsing="false" onAction="#showContent1Op" prefHeight="25.0" prefWidth="131.0" text="Show Content #1" />
+            <Button layoutX="32.0" layoutY="187.0" mnemonicParsing="false" onAction="#showContent2Op" prefHeight="25.0" prefWidth="131.0" text="Show Content #2" />
+         </children>
+      </AnchorPane>
+   </children>
+</HBox>
