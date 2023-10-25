@@ -1,23 +1,22 @@
 package application;
-	
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
+import javafx.fxml.FXMLLoader;
+
 /**
  * 
  * @author Mengting Chang
- * @author Dong
- * @author
- * @version 0.20, 10/7/23
+ * @author Dong Tang
+ * @author Sadiya Rahman
+ * @version 0.30, 10/14/23
  * 
  *
  */
-
 
 public class Main extends Application {
 	static Boolean canExit = true;
@@ -29,10 +28,14 @@ public class Main extends Application {
 	 */
 	public void start(Stage primaryStage) {
 		try {
+			// Initialize the database table.
+			DatabaseHelper.createNewTable();
+
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
 			Scene scene = new Scene(root,800,800);
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
+			
 			primaryStage.show();
 			
 			primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -40,9 +43,8 @@ public class Main extends Application {
 				public void handle(WindowEvent event) {
 					if(!canExit) {
 						event.consume();
-					}	
+					}
 				}
-				
 			});
 		} catch(Exception e) {
 			e.printStackTrace();
@@ -70,6 +72,4 @@ public class Main extends Application {
 	public static void main(String[] args) {
 		launch(args);
 	}
-	
-	
 }
