@@ -13,7 +13,7 @@ import projects.Project;  // Import your Project class
 
 public class DatabaseHelper {
 
-    private static final String DB_URL = "jdbc:sqlite:mydatabase.db";
+    private static final String DB_URL = "jdbc:sqlite:projects.db";
 
     public static Connection connect() {
         Connection conn = null;
