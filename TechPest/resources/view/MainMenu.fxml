@@ -10,12 +10,12 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
    <center>
       <GridPane alignment="CENTER" prefHeight="269.0" prefWidth="458.0" BorderPane.alignment="CENTER">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="10.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
         <rowConstraints>
@@ -25,9 +25,16 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="newProject" alignment="CENTER" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="219.0" text="New Project" GridPane.rowIndex="1" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showExistenceProject" prefHeight="25.0" prefWidth="220.0" text="Existing Projects" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Button" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="newProject" alignment="CENTER" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="219.0" text="Create New Project" GridPane.rowIndex="1" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showExistenceProject" prefHeight="25.0" prefWidth="220.0" text="Existing Project" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="219.0" text="Create New Ticket" onAction="#handleCreateNewTicketButton" GridPane.rowIndex="2" />
+            
+            <Label alignment="CENTER" prefHeight="17.0" prefWidth="381.0" text="TechPests" GridPane.columnIndex="1">
+               <font>
+                  <Font name="Lucida Sans Demibold" size="18.0" />
+               </font>
+            </Label>
+            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="148.0" text="Quit" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0" text="Button" GridPane.columnIndex="2" GridPane.rowIndex="3" />
          </children>
          <padding>
@@ -36,14 +43,7 @@
       </GridPane>
    </center>
    <top>
-      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label alignment="CENTER" layoutX="239.0" layoutY="176.0" prefHeight="17.0" prefWidth="381.0" text="TechPests">
-               <font>
-                  <Font name="Lucida Sans Demibold" size="18.0" />
-               </font>
-            </Label>
-         </children></Pane>
+      <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </top>
    <left>
       <Pane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />

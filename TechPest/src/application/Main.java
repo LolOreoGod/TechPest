@@ -20,7 +20,6 @@ import javafx.fxml.FXMLLoader;
 
 public class Main extends Application {
 	static Boolean canExit = true;
-	
 	@Override
 	/**
 	 * Loads GFX from MainMenu.fxml
