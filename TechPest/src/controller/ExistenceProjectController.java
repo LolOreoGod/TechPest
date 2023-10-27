@@ -1,21 +1,23 @@
 package controller;
 
+import application.DatabaseHelper;
+import projects.Project;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
+
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
-import application.DatabaseHelper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import projects.Project;
 
 public class ExistenceProjectController implements Initializable{
+
+	@FXML
+    private TextField searchField;
 
     @FXML
     private TableView<Project> TableView;
@@ -31,32 +33,84 @@ public class ExistenceProjectController implements Initializable{
 
     @FXML
     private TableColumn<Project, LocalDate> InvoiceDateColumn;
-       
+
     @FXML
-    private Button clearAll;
+    private TableColumn<Project, LocalDate> LastUpdatedColumn;
+
+    @FXML
+    private TableColumn<Project, String> StatusColumn;
+
+    @FXML
+    private TableColumn<Project, String> ActionsColumn;
+
+
+   // private ObservableList<Project> projectList = FXCollections.observableArrayList();
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+    	IDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        ProjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
+        DescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("Description"));
+        InvoiceDateColumn.setCellValueFactory(new PropertyValueFactory<>("Date"));
+
+        List<Project> projectList = DatabaseHelper.getAllProjects();
+        ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
+        TableView.setItems(observableList);
+    	
     
+    }
     @FXML
     public void clearAll() {
         DatabaseHelper.clearProjectTable();
         refreshTable();
     }
-   
-    public void initialize(URL location, ResourceBundle resources) {
-        IDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-        ProjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
-        DescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("Description"));
-        InvoiceDateColumn.setCellValueFactory(new PropertyValueFactory<>("Date"));
-   
-        List<Project> projectList = DatabaseHelper.getAllProjects();
-        ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
-        TableView.setItems(observableList);
-    }
-    
     private void refreshTable() {
         List<Project> projectList = DatabaseHelper.getAllProjects();
         ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
         TableView.setItems(observableList);
     }
-    
+/**
+    public void createNewTicket() {
+        String title = ticketTitle.getText();
+        String description = ticketDescription.getText();
 
+        Project selectedProject = projectComboBox.getSelectionModel().getSelectedItem();  // Get the selected project from ComboBox
+
+        if (selectedProject != null && validateTicketData(title, description)) {
+            // Actual logic to save ticket to database
+            DatabaseHelper.insertTicket(selectedProject.getId(), title, description); // Using the overloaded method to store title as well
+            // Provide feedback to the user
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Success");
+            alert.setHeaderText(null);
+            alert.setContentText("Ticket successfully created!");
+            alert.showAndWait();
+        } else {
+            // Provide feedback about invalid data or if no project is selected
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText(null);
+            alert.setContentText("Please provide valid data or select a project.");
+            alert.showAndWait();
+        }
+    }
+    **/
+/**
+    private boolean validateTicketData(String title, String description) {
+        return title != null && !title.trim().isEmpty() && description != null && !description.trim().isEmpty();
+    }
+    **/
+/**
+    public void loadProjects() {
+        List<Project> projectsFromDB = fetchProjectsFromDatabase();
+        if (projectsFromDB != null) {
+            projectList.addAll(projectsFromDB);
+        }
+    }
+    **/
+/**
+    private List<Project> fetchProjectsFromDatabase() {
+        return DatabaseHelper.getAllProjects();
+    }
+**/
 }
