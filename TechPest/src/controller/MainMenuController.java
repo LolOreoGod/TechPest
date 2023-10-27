@@ -23,6 +23,9 @@ import java.util.List;
  *
  */
 public class MainMenuController {
+	
+	private Stage stage;
+	private Parent root;
 
 	@FXML Button newProject;
 	public void handleButtonAction(ActionEvent event) {
@@ -64,18 +67,6 @@ public class MainMenuController {
     public void handleViewProjects(ActionEvent event) {
         displayProjects();
     }
-    
-    private Stage stage;
-	private Scene scene;
-	private Parent root;
-	
-	public void Back(ActionEvent event) throws IOException{
-		root = FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
-		stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-		scene = new Scene(root);
-		stage.setScene(scene);
-		stage.show();
-	}
 
 }
 
