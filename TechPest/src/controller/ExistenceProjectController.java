@@ -1,14 +1,21 @@
 package controller;
 
 import application.DatabaseHelper;
+import application.Main;
 import projects.Project;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 
+import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,7 +49,10 @@ public class ExistenceProjectController implements Initializable{
 
     @FXML
     private TableColumn<Project, String> ActionsColumn;
-
+    
+    @FXML
+    private Button newTicket;
+    
 
    // private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
@@ -69,6 +79,30 @@ public class ExistenceProjectController implements Initializable{
         ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
         TableView.setItems(observableList);
     }
+     
+    
+    public void newTickets(ActionEvent event) {
+        showNewTickets();
+    }
+    
+    @FXML
+    public void showNewTickets() {
+    	try {
+	        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewTicket.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+	        stage.setTitle("New Ticket");
+	        stage.setScene(new Scene(root, 600, 600));
+	        stage.initStyle(StageStyle.UTILITY);
+	        stage.show();
+
+	        Main.setClosable(false);
+	        stage.setOnCloseRequest(e-> Main.setClosable(true));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+    }
+
 /**
     public void createNewTicket() {
         String title = ticketTitle.getText();

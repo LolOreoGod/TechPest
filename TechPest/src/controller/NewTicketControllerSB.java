@@ -105,4 +105,6 @@ public class NewTicketControllerSB {
         // Optionally, close the window after submission
         // back();
     }
+    
+    
 }

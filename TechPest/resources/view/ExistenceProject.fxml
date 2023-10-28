@@ -18,7 +18,7 @@
             <Button mnemonicParsing="false" text="Search" />
             <Button mnemonicParsing="false" text="Filters" />
             <Button mnemonicParsing="false" text="New Project" />
-            <Button mnemonicParsing="false" text="New Ticket" />
+            <Button fx:id="newTicket" mnemonicParsing="false" onAction="#showNewTickets" text="New Ticket" />
          </children>
          <HBox.hgrow>
             <Priority fx:constant="ALWAYS" />

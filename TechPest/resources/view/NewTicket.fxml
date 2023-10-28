@@ -10,9 +10,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="476.0" xmlns="http://javafx.com/javafx/8.0.202" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExistenceProjectControllerSB">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="546.0" prefWidth="476.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ExistenceProjectControllerSB">
    <center>
       <VBox prefHeight="368.0" prefWidth="416.0" BorderPane.alignment="CENTER">
          <children>
@@ -42,14 +41,7 @@
       </VBox>
    </center>
    <top>
-      <HBox prefHeight="31.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label prefHeight="27.0" prefWidth="246.0" text="New Ticket">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Label>
-         </children></HBox>
+      <HBox prefHeight="31.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </top>
    <left>
       <Pane prefHeight="291.0" prefWidth="30.0" BorderPane.alignment="CENTER" />

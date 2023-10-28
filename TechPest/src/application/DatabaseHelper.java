@@ -77,6 +77,25 @@ public class DatabaseHelper {
         }
         return projectList;
     }
+    
+    public static List<Project> getAllTickets() {
+        List<Project> projectList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM projects";
+
+        try (Connection conn = connect(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(selectQuery)) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String description = rs.getString("description");
+                LocalDate date = LocalDate.parse(rs.getString("date"));
+                Project project = new Project(id, name, description, date);
+                projectList.add(project);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return projectList;
+    }
 
     // Delete all entries from the 'projects' table
     public static void clearProjectTable() {
