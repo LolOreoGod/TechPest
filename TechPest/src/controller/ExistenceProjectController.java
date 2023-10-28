@@ -6,6 +6,7 @@ import projects.Project;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.collections.FXCollections;
@@ -54,6 +56,8 @@ public class ExistenceProjectController implements Initializable{
     
     @FXML private Button newTicketButton;
 
+    private Stage stage;
+    private Scene scene;
 
    // private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
@@ -118,18 +122,29 @@ public class ExistenceProjectController implements Initializable{
     }
     
     public void viewTickets(String projName, Event event) {
-    	ViewTicketsController viewTicketsController = new ViewTicketsController();
-    	//viewTicketsController.setProjName(projName);
+    	
     	
     	try {
+    		//does not open popup, just switches scene
+    		
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
+			
 			Parent root = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
+			scene = new Scene(root);
+			
+			
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+
+			stage.setScene(scene);
+			
+			
 			stage.setTitle("New Ticket");
-			stage.setUserData(projName);
-			stage.setScene(new Scene(root, 800, 546));
-			stage.initStyle(StageStyle.UTILITY);
+			
+	    	
 			stage.show(); 
+			
+			
+			
 			
 			//Main.setClosable(false);
 			//stage.setOnCloseRequest(e-> Main.setClosable(true));
@@ -138,6 +153,13 @@ public class ExistenceProjectController implements Initializable{
 		}
     	
     }
+    
+    @FXML
+    public void back(ActionEvent event) {
+    	
+    }
+    
+  
     
     
    

@@ -11,13 +11,18 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import projects.Project;
 import projects.Ticket;
 
@@ -47,11 +52,38 @@ public class ViewTicketsController implements Initializable{
     private TableColumn<Ticket, String> TicketDescription;
     
     private List<Project> allProjects;
-    
+    private Stage stage;
+    private Scene scene;
     
     @FXML
     void back(ActionEvent event) {
+    	try {
+    		//does not open popup, just switches scene
+    		
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ExistenceProject.fxml"));
+			
+			Parent root = (Parent) fxmlLoader.load();
+			scene = new Scene(root);
+			
+			
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
+			stage.setScene(scene);
+			
+			
+			stage.setTitle("New Ticket");
+			
+	    	
+			stage.show(); 
+			
+			
+			
+			
+			//Main.setClosable(false);
+			//stage.setOnCloseRequest(e-> Main.setClosable(true));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
     }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
