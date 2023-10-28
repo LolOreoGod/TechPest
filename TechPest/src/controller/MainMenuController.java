@@ -6,6 +6,7 @@ import projects.Project;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -23,6 +24,8 @@ public class MainMenuController {
 
 	@FXML Button newProject;
 	@FXML Button ExistenceProject;
+	private Stage stage;
+	private Scene scene;
 
 	// This method remains unchanged
 	public void handleButtonAction(ActionEvent event) {
@@ -47,15 +50,16 @@ public class MainMenuController {
 		try {
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ExistenceProject.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
-			Stage stage = new Stage();
-			stage.setTitle("Existence Project");
-			stage.setScene(new Scene(root, 1000, 600));
-			stage.initStyle(StageStyle.UTILITY);
-			stage.show(); 
-			
+			stage = new Stage();
+			scene = new Scene(root, 1000, 600);
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.setScene(scene);
+			stage.setTitle("Existing Project");
+			stage.show();
+
 			Main.setClosable(false);
-			stage.setOnCloseRequest(e-> Main.setClosable(true));
-		} catch(Exception e) {
+			stage.setOnCloseRequest(e -> Main.setClosable(true));
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
