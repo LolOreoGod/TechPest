@@ -60,6 +60,7 @@ public class NewTicketControllerSB {
 
     @FXML
     public void initialize() {
+    	
         // Fetch all projects from the database
         allProjects = DatabaseHelper.getAllProjects();
 

@@ -14,19 +14,32 @@ import projects.Ticket;
 
 public class DatabaseHelper {
 
-    private static final String DB_URL = "jdbc:sqlite:mydatabase.db";
+    private static final String DB_URL = "jdbc:sqlite:projects.db";
+    private static final String DB_URLTickets = "jdbc:sqlite:tickets.db";
 
     // Establish a connection to the SQLite database
     public static Connection connect() {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(DB_URL);
-            System.out.println("Connection to SQLite has been established.");
+            System.out.println("Connection to Projects SQLite has been established.");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         return conn;
     }
+    
+    public static Connection connectTickets() {
+        Connection conn = null;
+        try {
+            conn = DriverManager.getConnection(DB_URLTickets);
+            System.out.println("Connection to Tickets SQLite has been established.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return conn;
+    }
+    
 
     // Create a new 'projects' table if it doesn't exist
     public static void createNewTable() {
@@ -38,6 +51,23 @@ public class DatabaseHelper {
                    + ");";
 
         try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+ // Create a new 'tickets' table if it doesn't exist
+    public static void createNewTicketsTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS tickets ("
+                   + " id integer PRIMARY KEY,"
+                   + " projectId integer NOT NULL,"
+                   + " title text NOT NULL,"
+                   + " description text,"
+                   + " FOREIGN KEY (projectId) REFERENCES projects(id)"
+                   + ");";
+
+        try (Connection conn = connectTickets(); Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -77,6 +107,25 @@ public class DatabaseHelper {
         }
         return projectList;
     }
+    
+ // Retrieve all projects from the 'projects' table
+    public static List<Ticket> getAllTickets() {
+        List<Ticket> ticketList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM Tickets";
+
+        try (Connection conn = connectTickets(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(selectQuery)) {
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("title");
+                String description = rs.getString("description");
+                Ticket ticket = new Ticket(id, name, description);
+                ticketList.add(ticket);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return ticketList;
+    }
 
     // Delete all entries from the 'projects' table
     public static void clearProjectTable() {
@@ -88,28 +137,12 @@ public class DatabaseHelper {
         }
     }
 
-    // Create a new 'tickets' table if it doesn't exist
-    public static void createNewTicketsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS tickets ("
-                   + " id integer PRIMARY KEY,"
-                   + " projectId integer NOT NULL,"
-                   + " title text NOT NULL,"
-                   + " description text,"
-                   + " FOREIGN KEY (projectId) REFERENCES projects(id)"
-                   + ");";
-
-        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
     // Insert a new ticket into the 'tickets' table
     public static void insertTicket(int projectId, String title, String description){
         String sql = "INSERT INTO tickets(projectId, title, description) VALUES(?,?,?)"; 
 
-        try (Connection conn = connect();
+        try (Connection conn = connectTickets();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, projectId);
             pstmt.setString(2, title);
@@ -125,7 +158,7 @@ public class DatabaseHelper {
         List<Ticket> ticketList = new ArrayList<>();
         String selectQuery = "SELECT * FROM tickets WHERE projectId = ?";
 
-        try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+        try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
             pstmt.setInt(1, projectId);
             ResultSet rs = pstmt.executeQuery();
             
@@ -133,7 +166,7 @@ public class DatabaseHelper {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
-                Ticket ticket = new Ticket(id, projectId, title, description);
+                Ticket ticket = new Ticket(id, title, description);
                 ticketList.add(ticket);
             }
         } catch (SQLException e) {
@@ -145,7 +178,7 @@ public class DatabaseHelper {
     // Delete all entries from the 'tickets' table
     public static void clearTicketsTable() {
         String sql = "DELETE FROM tickets";
-        try (Connection conn = connect(); Statement stmt = conn.createStatement()) {
+        try (Connection conn = connectTickets(); Statement stmt = conn.createStatement()) {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             System.out.println(e.getMessage());

@@ -30,7 +30,8 @@ public class Main extends Application {
 		try {
 			// Initialize the database table.
 			DatabaseHelper.createNewTable();
-
+			DatabaseHelper.createNewTicketsTable();
+			
 			BorderPane root = (BorderPane)FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
 			Scene scene = new Scene(root,800,800);
 			//scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());

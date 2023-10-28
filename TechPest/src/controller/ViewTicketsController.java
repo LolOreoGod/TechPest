@@ -15,7 +15,9 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import projects.Project;
 import projects.Ticket;
 
@@ -35,6 +37,15 @@ public class ViewTicketsController implements Initializable{
     @FXML
     private Button back;
     
+    @FXML
+    private TableColumn<Ticket, String> TicketIDColumn;
+
+    @FXML
+    private TableColumn<Ticket, String> TicketName;
+
+    @FXML
+    private TableColumn<Ticket, String> TicketDescription;
+    
     private List<Project> allProjects;
     
     
@@ -44,6 +55,14 @@ public class ViewTicketsController implements Initializable{
     }
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
+		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        List<Ticket> ticketList = DatabaseHelper.getAllTickets();
+        ObservableList<Ticket> observableList = FXCollections.observableArrayList(ticketList);
+        ticketsTableView.setItems(observableList);
+        
 		System.out.println(projName);
 		 // Fetch all projects from the database
         allProjects = DatabaseHelper.getAllProjects();

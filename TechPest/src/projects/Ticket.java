@@ -1,15 +1,12 @@
 package projects;
 
 public class Ticket {
-    private int id;
-    private int projectId;
+	private int id;
     private String title;
     private String description;
 
-    // Constructor to initialize a new Ticket
-    public Ticket(int id, int projectId, String title, String description) {
+    public Ticket(int id, String title, String description) {
         this.id = id;
-        this.projectId = projectId;
         this.title = title;
         this.description = description;
     }
@@ -23,14 +20,14 @@ public class Ticket {
         this.id = id;
     }
 
-    public int getProjectId() {
+    /*public int getProjectId() {
         return projectId;
     }
 
     public void setProjectId(int projectId) {
         this.projectId = projectId;
     }
-
+	**/
     public String getTitle() {
         return title;
     }

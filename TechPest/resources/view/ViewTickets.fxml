@@ -28,9 +28,9 @@
             <HBox layoutX="10.0" layoutY="98.0" prefHeight="31.0" prefWidth="416.0" />
             <TableView fx:id="ticketsTableView" prefHeight="300.0" prefWidth="740.0">
               <columns>
-                <TableColumn prefWidth="75.0" text="ID" />
-                <TableColumn prefWidth="173.0" text="Ticket" />
-                  <TableColumn prefWidth="356.0" text="Description" />
+                <TableColumn fx:id="TicketIDColumn" prefWidth="75.0" text="ID" />
+                <TableColumn fx:id="TicketName" prefWidth="173.0" text="Ticket" />
+                  <TableColumn fx:id="TicketDescription" prefWidth="356.0" text="Description" />
                   <TableColumn prefWidth="135.0" text="Last Updated" />
               </columns>
             </TableView>
