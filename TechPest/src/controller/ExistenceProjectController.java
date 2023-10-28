@@ -10,12 +10,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.collections.FXCollections;
 
-import java.awt.event.ActionEvent;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -50,13 +52,13 @@ public class ExistenceProjectController implements Initializable{
     @FXML
     private TableColumn<Project, String> ActionsColumn;
     
-    @FXML
-    private Button newTicket;
-    
+    @FXML private Button newTicketButton;
+
 
    // private ObservableList<Project> projectList = FXCollections.observableArrayList();
 
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void initialize(URL location, ResourceBundle resources) {
     	IDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         ProjectNameColumn.setCellValueFactory(new PropertyValueFactory<>("Name"));
@@ -67,6 +69,22 @@ public class ExistenceProjectController implements Initializable{
         ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
         TableView.setItems(observableList);
     	
+        
+        TableView.setOnMousePressed(new EventHandler() {
+
+        	
+			@Override
+			public void handle(Event event) {
+				// TODO Auto-generated method stub
+				if (((MouseEvent) event).isPrimaryButtonDown() && ((MouseEvent) event).getClickCount() == 2) {
+					//on double click, open view ticket
+                    String projName = TableView.getSelectionModel().getSelectedItem().getName();
+                    viewTickets(projName, event);
+                    
+                }
+				
+			}
+        });
     
     }
     @FXML
@@ -79,30 +97,50 @@ public class ExistenceProjectController implements Initializable{
         ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
         TableView.setItems(observableList);
     }
-     
-    
-    public void newTickets(ActionEvent event) {
-        showNewTickets();
-    }
     
     @FXML
-    public void showNewTickets() {
+    public void newTicket() {
+    	System.out.println("new ticket");
     	try {
-	        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewTicket.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewTicket.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			Stage stage = new Stage();
-	        stage.setTitle("New Ticket");
-	        stage.setScene(new Scene(root, 600, 600));
-	        stage.initStyle(StageStyle.UTILITY);
-	        stage.show();
-
-	        Main.setClosable(false);
-	        stage.setOnCloseRequest(e-> Main.setClosable(true));
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
+			stage.setTitle("New Ticket");
+			stage.setScene(new Scene(root, 476, 546));
+			stage.initStyle(StageStyle.UTILITY);
+			stage.show(); 
+			
+			//Main.setClosable(false);
+			//stage.setOnCloseRequest(e-> Main.setClosable(true));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
     }
-
+    
+    public void viewTickets(String projName, Event event) {
+    	ViewTicketsController viewTicketsController = new ViewTicketsController();
+    	//viewTicketsController.setProjName(projName);
+    	
+    	try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.setTitle("New Ticket");
+			stage.setUserData(projName);
+			stage.setScene(new Scene(root, 800, 546));
+			stage.initStyle(StageStyle.UTILITY);
+			stage.show(); 
+			
+			//Main.setClosable(false);
+			//stage.setOnCloseRequest(e-> Main.setClosable(true));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+    	
+    }
+    
+    
+   
 /**
     public void createNewTicket() {
         String title = ticketTitle.getText();

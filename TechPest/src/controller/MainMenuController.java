@@ -23,6 +23,7 @@ public class MainMenuController {
 
 	@FXML Button newProject;
 	@FXML Button ExistenceProject;
+	@FXML Button newTicket;  // Added reference to the "Create New Ticket" button
 
 	// This method remains unchanged
 	public void handleButtonAction(ActionEvent event) {
@@ -58,6 +59,24 @@ public class MainMenuController {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	// Handler for the "Create New Ticket" button
+	@FXML
+	public void handleCreateNewTicketButton(ActionEvent event) {
+	    try {
+	        Parent root = FXMLLoader.load(getClass().getResource("/view/NewTicket.fxml"));
+	        Stage stage = new Stage();
+	        stage.setTitle("New Ticket");
+	        stage.setScene(new Scene(root));
+	        stage.initStyle(StageStyle.UTILITY);
+	        stage.show();
+
+	        Main.setClosable(false);
+	        stage.setOnCloseRequest(e-> Main.setClosable(true));
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
     // This method remains unchanged

@@ -25,8 +25,9 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Button fx:id="newProject" alignment="CENTER" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="74.0" prefWidth="146.0" text="Create New Project" GridPane.rowIndex="1" />
-            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showExistenceProject" prefHeight="64.0" prefWidth="146.0" text="Existing Project" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button fx:id="newProject" alignment="CENTER" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="25.0" prefWidth="219.0" text="Create New Project" GridPane.rowIndex="1" />
+            <Button alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#showExistenceProject" prefHeight="25.0" prefWidth="220.0" text="Existing Project" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="219.0" text="Create New Ticket" onAction="#handleCreateNewTicketButton" GridPane.rowIndex="2" />
             
             <Label alignment="CENTER" prefHeight="17.0" prefWidth="381.0" text="TechPests" GridPane.columnIndex="1">
                <font>
