@@ -1,31 +1,30 @@
 package projects;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class Comment {
 	
-	private Timestamp timestamp;
-	private String description;
+	private LocalDate date;
+	private String comments;
 	
+	public Comment(LocalDate date, String comments) {
+		this.date = date;
+		this.comments = comments;
+	}
 	
-	public Comment(String description) {
-		if(description.equals("")) {
-			return;
-		}
-		else {
-			timestamp = new Timestamp(System.currentTimeMillis());
-			this.description = description;
-		
-		}
+	public LocalDate getDate() {
+		return date;
+	}
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+	public String getComments() {
+		return comments;
+	}
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 	
 	
-	public String getDescription() {
-		return description;
-	}
-	
-	public Timestamp getTime() {
-		return timestamp;
-	}
 
 }
