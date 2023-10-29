@@ -113,21 +113,4 @@ public class NewTicketControllerSB {
 
 		back(event);
 	}
-
-	@FXML
-	public void submitComment(ActionEvent event) {
-		// DOES NOT WORK
-		// ObservableList<String> items = FXCollections.observableArrayList("test1",
-		// "test2");
-		// commentListView = new ListView<String>(items);
-		System.out.println("submitted");
-		String desc = newCommentText.getText();
-		Comment comment = new Comment(desc);
-		comments.add(comment);
-
-		// display comment:
-		commentListView.getItems().add(1, desc);
-
-	}
-
 }

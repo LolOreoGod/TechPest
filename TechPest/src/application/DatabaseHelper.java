@@ -9,6 +9,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import projects.Comment;
 import projects.Project;
 import projects.Ticket;
 
@@ -180,6 +182,26 @@ public class DatabaseHelper {
 		}
 		return ticketList;
 	}
+	
+    public static List<Comment> getCommentsForTicket(int selectedTicketId) {
+        List<Comment> commentList = new ArrayList<>();
+        String selectQuery = "SELECT * FROM comments WHERE ticketId = ?";
+
+        try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+            pstmt.setInt(1, selectedTicketId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                LocalDate date = LocalDate.parse(rs.getString("date"));
+                String comments = rs.getString("comments");
+                Comment comment = new Comment(date, comments);
+                commentList.add(comment);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return commentList;
+    }
 
 	// Delete all entries from the 'projects' table
 	public static void clearProjectTable() {
