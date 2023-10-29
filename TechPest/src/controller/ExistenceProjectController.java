@@ -59,6 +59,9 @@ public class ExistenceProjectController implements Initializable {
 
 	@FXML
 	private Button newTicketButton;
+	@FXML
+	private Button addComment;
+	
 
 	private Stage stage;
 	private Scene scene;
@@ -92,6 +95,11 @@ public class ExistenceProjectController implements Initializable {
     	DatabaseHelper.clearProjectTable();
     	DatabaseHelper.clearTicketsTable();
 		refreshTable();
+    }
+    
+    @FXML
+    void addComment() {
+    
     }
     
 	private void refreshTable() {
