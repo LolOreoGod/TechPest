@@ -4,6 +4,7 @@ public class Ticket {
 	private int id;
 	private String title;
 	private String description;
+	private Project parentProject;
 
 	public Ticket(int id, String title, String description) {
 		this.id = id;

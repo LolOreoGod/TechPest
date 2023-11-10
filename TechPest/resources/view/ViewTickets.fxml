@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
@@ -19,12 +20,29 @@
                <padding>
                   <Insets top="10.0" />
                </padding></Label>
-            <ComboBox fx:id="projectDropdown" prefHeight="25.0" prefWidth="391.0" promptText="Select" />
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ComboBox fx:id="projectDropdown" prefHeight="25.0" prefWidth="391.0" promptText="Select">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Button fx:id="clearProjSelectionButton" mnemonicParsing="false" onAction="#handleClearProjSelection" text="Clear Selection" />
+               </children>
+            </HBox>
             <HBox prefHeight="31.0" prefWidth="416.0">
                <children>
                   <Label fx:id="showError" />
                </children></HBox>
-            <HBox layoutX="10.0" layoutY="98.0" prefHeight="31.0" prefWidth="416.0" />
+            <HBox layoutX="10.0" layoutY="98.0" prefHeight="31.0" prefWidth="416.0">
+               <children>
+                  <TextField fx:id="searchField" prefHeight="25.0" prefWidth="328.0" promptText="Search...">
+                     <HBox.margin>
+                        <Insets bottom="10.0" right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="25.0" prefWidth="53.0" text="Search" />
+               </children></HBox>
             <TableView fx:id="ticketsTableView" prefHeight="370.0" prefWidth="736.0">
               <columns>
                 <TableColumn fx:id="TicketIDColumn" prefWidth="39.0" text="ID" />

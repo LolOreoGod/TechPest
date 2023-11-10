@@ -22,6 +22,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -52,8 +53,18 @@ public class ViewTicketsController implements Initializable {
 
 	@FXML
 	private TableColumn<Ticket, String> TicketDescription;
+	
+	@FXML
+	private Button searchButton;
+	
+	@FXML
+	private TextField searchField;
+	
+	@FXML
+	private Button clearProjSelectionButton;
 
 	private List<Project> allProjects;
+	private List<Ticket> ticketList;
 	private Stage stage;
 	private Scene scene;
 	private CommonObjs common = CommonObjs.getInstance();
@@ -86,8 +97,8 @@ public class ViewTicketsController implements Initializable {
 		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 		List<Ticket> list = DatabaseHelper.getAllTickets();
-		ObservableList<Ticket> projectList = FXCollections.observableArrayList(list);
-		ticketsTableView.setItems(projectList);
+		ObservableList<Ticket> ticketList = FXCollections.observableArrayList(list);
+		ticketsTableView.setItems(ticketList);
 		ticketsTableView.refresh();
 
 		if (allProjects == null || allProjects.isEmpty()) {
@@ -114,9 +125,9 @@ public class ViewTicketsController implements Initializable {
 			int projectId = selectedProject.getId(); // Assuming a method to get the project ID
 
 			// Fetch all tickets related to the selected project ID
-			List<Ticket> projectTickets = DatabaseHelper.getTicketsForProject(projectId);
+			this.ticketList = DatabaseHelper.getTicketsForProject(projectId);
 
-			if (projectTickets == null) {
+			if (this.ticketList == null) {
 				// Handle the case when there's an error fetching tickets
 				return;
 			}
@@ -126,7 +137,7 @@ public class ViewTicketsController implements Initializable {
 		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-		ObservableList<Ticket> projectTicketsObservableList = FXCollections.observableArrayList(projectTickets);
+		ObservableList<Ticket> projectTicketsObservableList = FXCollections.observableArrayList(this.ticketList);
 		ticketsTableView.setItems(projectTicketsObservableList);
 		ticketsTableView.refresh();
 			
@@ -176,5 +187,50 @@ public class ViewTicketsController implements Initializable {
 
 	}
 	
+	
+	@FXML
+    void handleSearchAction(ActionEvent event) {
+        String searchText = searchField.getText().toLowerCase();
+ 
+        if (searchText.isEmpty() && projectDropdown.getSelectionModel().isEmpty()) {
+            fullRefreshTable();
+            return;
+        }
+        //Within the list of filtered tickets (by project)
+        //We filter for search by ticket name
+        List<Ticket> filteredTickets = ticketList.stream()
+                .filter(ticket -> ticket.getTitle().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
+        ObservableList<Ticket> observableList = FXCollections.observableArrayList(filteredTickets);
+        //TODO: Filter for search by project name as well
 
+        if (observableList.isEmpty()) {
+            ticketsTableView.setPlaceholder(new Label("No projects found with the search term."));
+        } else {
+            ticketsTableView.setPlaceholder(new Label("")); 
+        }
+
+        ticketsTableView.setItems(observableList);
+    }
+	
+	private void refreshTable() {
+		//refresh, with respect to project selection
+		ticketList = DatabaseHelper.getTicketsForProject(common.getSelectedProject().getId());
+		ObservableList<Ticket> observableList = FXCollections.observableArrayList(ticketList);
+		ticketsTableView.setItems(observableList);
+	}
+	
+	//Fully refresh, disregarding project selection
+	private void fullRefreshTable() {
+		ticketList = DatabaseHelper.getAllTickets();
+		ObservableList<Ticket> observableList = FXCollections.observableArrayList(ticketList);
+		ticketsTableView.setItems(observableList);
+	}
+
+	
+	@FXML
+	void handleClearProjSelection(ActionEvent Event) {
+		projectDropdown.getSelectionModel().clearSelection();
+		fullRefreshTable();
+	}
 }
