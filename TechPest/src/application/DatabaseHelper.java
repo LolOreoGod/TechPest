@@ -6,7 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,17 +81,20 @@ public class DatabaseHelper {
 		}
 	}
 
-	public static void createNewCommentTable() {
-		String sql = "CREATE TABLE IF NOT EXISTS comments (" + " id INTEGER PRIMARY KEY AUTOINCREMENT,"
-				+ " date TEXT NOT NULL," + " comment TEXT," + " ticketId INTEGER,"
-				+ " FOREIGN KEY (ticketId) REFERENCES ticket(id)" + ");";
+    public static void createNewCommentTable() {
+    	String sql = "CREATE TABLE IF NOT EXISTS comments (" +
+    		    "date TEXT NOT NULL," +
+    		    "comment TEXT," +
+    		    "ticketId INTEGER," +
+    		    "FOREIGN KEY (ticketId) REFERENCES ticket(id)" +
+    		    ");";
 
-		try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
-			stmt.execute(sql);
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
+        try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 	// Insert a new project into the 'projects' table
 	public static void insertProject(Project project) {
@@ -99,19 +104,6 @@ public class DatabaseHelper {
 			pstmt.setString(1, project.getName());
 			pstmt.setString(2, project.getDescription());
 			pstmt.setString(3, project.getDate().toString());
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
-	public static void insertComment(String date, String comment, int ticketId) {
-		String sql = "INSERT INTO comments (date, comment, ticketId) VALUES (?, ?, ?)";
-
-		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, date);
-			pstmt.setString(2, comment);
-			pstmt.setInt(3, ticketId);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -161,6 +153,28 @@ public class DatabaseHelper {
 		return ticketList;
 	}
 
+	public static List<Comment> getAllComments() {
+	    List<Comment> commentList = new ArrayList<>();
+	    String selectQuery = "SELECT * FROM Comments";
+
+	    try (Connection conn = connectComments();
+	         Statement stmt = conn.createStatement();
+	         ResultSet rs = stmt.executeQuery(selectQuery)) {
+	        while (rs.next()) {
+	            String dateString = rs.getString("date");
+	            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	            String comments = rs.getString("comment"); // Adjusted the variable name to avoid conflict
+	            Comment comment = new Comment(date, comments); // Assuming there is a proper constructor in the Comment class
+	            commentList.add(comment);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+	    return commentList;
+	}
+
+
+
 	// Retrieve all tickets related to a specific project
 	public static List<Ticket> getTicketsForProject(int selectedProjectId) {
 		List<Ticket> ticketList = new ArrayList<>();
@@ -182,26 +196,26 @@ public class DatabaseHelper {
 		}
 		return ticketList;
 	}
-	
-    public static List<Comment> getCommentsForTicket(int selectedTicketId) {
-        List<Comment> commentList = new ArrayList<>();
-        String selectQuery = "SELECT * FROM comments WHERE ticketId = ?";
 
-        try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
-            pstmt.setInt(1, selectedTicketId);
-            ResultSet rs = pstmt.executeQuery();
+	public static List<Comment> getCommentsForTicket(int ticketId) {
+		List<Comment> commentList = new ArrayList<>();
+		String selectQuery = "SELECT * FROM comments WHERE ticketID = ?";
 
-            while (rs.next()) {
-                LocalDate date = LocalDate.parse(rs.getString("date"));
-                String comments = rs.getString("comments");
-                Comment comment = new Comment(date, comments);
-                commentList.add(comment);
-            }
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-        return commentList;
-    }
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+			pstmt.setInt(1, ticketId);
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				LocalDate date = LocalDate.parse(rs.getString("date"));
+				String description = rs.getString("description"); // Adjusted to match the column name in the database
+				Comment comment = new Comment(date, description); // Adjusted to use 'description' instead of 'comments'
+				commentList.add(comment);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return commentList;
+	}
 
 	// Delete all entries from the 'projects' table
 	public static void clearProjectTable() {
@@ -227,6 +241,19 @@ public class DatabaseHelper {
 		}
 	}
 
+	// Insert a new comment into the 'comments' table for a specific ticket
+	public static void insertComment(LocalDate date, String comment) {
+		String sql = "INSERT INTO comments (date, comment) VALUES (?, ?)";
+
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, date.toString()); // Modified to convert LocalDate to String directly
+			pstmt.setString(2, comment);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
 	// Delete all entries from the 'tickets' table
 	public static void clearTicketsTable() {
 		String sql = "DELETE FROM tickets";
@@ -236,5 +263,13 @@ public class DatabaseHelper {
 			System.out.println(e.getMessage());
 		}
 	}
-
+	
+	public static void clearCommentsTable() {
+		String sql = "DELETE FROM comments";
+		try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import application.CommonObjs;
 import application.DatabaseHelper;
 import application.Main;
 import projects.Project;
@@ -27,6 +28,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class ExistenceProjectController implements Initializable {
 
@@ -62,12 +64,14 @@ public class ExistenceProjectController implements Initializable {
 	@FXML
 	private Button addComment;
 	
+	@FXML
+	private Button searchButton;
 
 	private Stage stage;
 	private Scene scene;
+	private Project selectedProject;
+	private CommonObjs common = CommonObjs.getInstance();
 
-	// private ObservableList<Project> projectList =
-	// FXCollections.observableArrayList();
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		IDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -78,30 +82,75 @@ public class ExistenceProjectController implements Initializable {
 		List<Project> projectList = DatabaseHelper.getAllProjects();
 		ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
 		TableView.setItems(observableList);
-
+		
+		
+		common.setProjectTable(TableView);
+		/**
+		 * DOUBLE CLICK EVENT
+		 */
 		TableView.setOnMouseClicked(event -> {
+			//IF DOUBLE CLICK
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-				// on double click, open view ticket
-				if (TableView.getSelectionModel().getSelectedItem() != null) {
+				selectedProject = TableView.getSelectionModel().getSelectedItem();
+				if (selectedProject != null) {
 					String projName = TableView.getSelectionModel().getSelectedItem().getName();
 					viewTickets(projName, event);
 				}
 			}
 		});
 	}
+	
+	@FXML
+    void handleSearchAction(ActionEvent event) {
+        String searchText = searchField.getText().toLowerCase();
+ 
+        if (searchText.isEmpty()) {
+            refreshTable();
+            return;
+        }
 
-    @FXML
-    void clearAll(ActionEvent event) {
-    	DatabaseHelper.clearProjectTable();
-    	DatabaseHelper.clearTicketsTable();
+        List<Project> filteredProjects = DatabaseHelper.getAllProjects().stream()
+                .filter(project -> project.getName().toLowerCase().contains(searchText))
+                .collect(Collectors.toList());
+
+        ObservableList<Project> observableList = FXCollections.observableArrayList(filteredProjects);
+
+
+        if (observableList.isEmpty()) {
+            TableView.setPlaceholder(new Label("No projects found with the search term."));
+        } else {
+            TableView.setPlaceholder(new Label("")); 
+        }
+
+        TableView.setItems(observableList);
+    }
+
+	@FXML
+	void clearAll(ActionEvent event) {
+		DatabaseHelper.clearProjectTable();
+		DatabaseHelper.clearCommentsTable();
+		DatabaseHelper.clearTicketsTable();
 		refreshTable();
-    }
-    
-    @FXML
-    void addComment() {
-    
-    }
-    
+	}
+
+	@FXML
+	void addComment(ActionEvent event) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewComment.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.setTitle("New Comment");
+			stage.setScene(new Scene(root, 600, 600));
+			stage.initStyle(StageStyle.UTILITY);
+			stage.show();
+
+			Main.setClosable(false);
+			stage.setOnCloseRequest(e -> Main.setClosable(true));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	private void refreshTable() {
 		List<Project> projectList = DatabaseHelper.getAllProjects();
 		ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
@@ -130,6 +179,9 @@ public class ExistenceProjectController implements Initializable {
 	public void viewTickets(String projName, Event event) {
 
 		try {
+			common.setSelectedProject(selectedProject);
+			
+			
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			scene = new Scene(root, 1000, 600);
@@ -137,6 +189,8 @@ public class ExistenceProjectController implements Initializable {
 			stage.setScene(scene);
 			stage.setTitle("View Ticket");
 			stage.show();
+			
+			
 
 			// Main.setClosable(false);
 			// stage.setOnCloseRequest(e-> Main.setClosable(true));
@@ -148,6 +202,7 @@ public class ExistenceProjectController implements Initializable {
 
 	@FXML
 	private Stage primaryStage;
+
 	public void backToMain(ActionEvent event) {
 		try {
 			// does not open popup, just switches scene
@@ -160,19 +215,13 @@ public class ExistenceProjectController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
-	@FXML
-	void handleViewCommentsButtonClick(ActionEvent event) {
-	    try {
-	        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewComments.fxml"));
-	        Parent root = (Parent) fxmlLoader.load();
-	        Stage stage = new Stage();
-	        stage.setTitle("View Comment");
-	        stage.setScene(new Scene(root));
-	        stage.show();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
 
+	public static void setClosable(boolean closable) {
+		boolean canExit;
+		if (closable) {
+			canExit = true;
+		} else {
+			canExit = false;
+		}
+	}
 }

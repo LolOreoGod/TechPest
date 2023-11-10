@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import application.CommonObjs;
 import application.DatabaseHelper;
 import application.Main;
 import javafx.collections.FXCollections;
@@ -25,6 +26,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import projects.Comment;
 import projects.Project;
 import projects.Ticket;
 
@@ -54,6 +56,7 @@ public class ViewTicketsController implements Initializable {
 	private List<Project> allProjects;
 	private Stage stage;
 	private Scene scene;
+	private CommonObjs common = CommonObjs.getInstance();
 
 	@FXML
 	void back(ActionEvent event) {
@@ -78,6 +81,14 @@ public class ViewTicketsController implements Initializable {
 
 	public void initialize(URL location, ResourceBundle resources) {
 		allProjects = DatabaseHelper.getAllProjects();
+		
+		TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
+		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+		List<Ticket> list = DatabaseHelper.getAllTickets();
+		ObservableList<Ticket> projectList = FXCollections.observableArrayList(list);
+		ticketsTableView.setItems(projectList);
+		ticketsTableView.refresh();
 
 		if (allProjects == null || allProjects.isEmpty()) {
 			showError.setText("Error fetching projects from the database!");
@@ -109,18 +120,28 @@ public class ViewTicketsController implements Initializable {
 				// Handle the case when there's an error fetching tickets
 				return;
 			}
+		
 
-			TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-			TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
-			TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
+		TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
+		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 
-			ObservableList<Ticket> projectTicketsObservableList = FXCollections.observableArrayList(projectTickets);
-			ticketsTableView.setItems(projectTicketsObservableList);
-			ticketsTableView.refresh();
+		ObservableList<Ticket> projectTicketsObservableList = FXCollections.observableArrayList(projectTickets);
+		ticketsTableView.setItems(projectTicketsObservableList);
+		ticketsTableView.refresh();
+			
+			
 
 		});
-
+		//select default project name in drop down, based off of previous selection
+		projectDropdown.getSelectionModel().select(common.getSelectedProject().getName());
+		common.setTicketTable(ticketsTableView);;
+		
+		/*
+		 * DOUBLE CLICK EVENT
+		 */
 		ticketsTableView.setOnMouseClicked(event -> {
+			//If double click
 			if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
 				// on double click, open view ticket
 				if (ticketsTableView.getSelectionModel().getSelectedItem() != null) {
@@ -131,27 +152,12 @@ public class ViewTicketsController implements Initializable {
 		});
 	}
 
-	/*private void viewComments(String ticketName, MouseEvent event) {
-
-		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewComments.fxml"));
-			Parent root = (Parent) fxmlLoader.load();
-			scene = new Scene(root, 1000, 600);
-			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			stage.setScene(scene);
-			stage.setTitle("View Comment");
-			stage.show();
-
-			// Main.setClosable(false);
-			// stage.setOnCloseRequest(e-> Main.setClosable(true));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}*/
-	
 	private void viewComments(String ticketName, MouseEvent event) {
+
 		try {
+			Ticket selectedTicket = ticketsTableView.getSelectionModel().getSelectedItem();
+			common.setSelectedTicket(selectedTicket);
+			
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewComments.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			scene = new Scene(root, 1000, 600);
@@ -161,20 +167,14 @@ public class ViewTicketsController implements Initializable {
 			stage.show();
 
 			// Get the selected ticket from the table
-			Ticket selectedTicket = ticketsTableView.getSelectionModel().getSelectedItem();
-
-			// Get the CommentPageController instance
-			CommentPageController commentController = fxmlLoader.getController();
-
-			// Pass the selected ticket to the CommentPageController
-			commentController.setTicket(selectedTicket);
-
+			
 			// Main.setClosable(false);
 			// stage.setOnCloseRequest(e-> Main.setClosable(true));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
 
+	}
+	
 
 }

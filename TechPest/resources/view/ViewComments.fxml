@@ -12,21 +12,24 @@
       <TableView fx:id="CommentTable" layoutX="31.0" layoutY="146.0" prefHeight="339.0" prefWidth="929.0">
         <columns>
           <TableColumn fx:id="DateColumn" prefWidth="102.0" text="Date" />
-            <TableColumn fx:id="commentCloumn" prefWidth="733.0" text="Comments" />
+            <TableColumn fx:id="commentColumn" prefWidth="733.0" text="Comments" />
         </columns>
       </TableView>
-      <Button layoutX="868.0" layoutY="509.0" mnemonicParsing="false" text="Edit Comment" />
+      <Button layoutX="753.0" layoutY="509.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Edit Comment" />
       <Button fx:id="back" layoutX="31.0" layoutY="509.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="66.0" text="Back" />
-      <Button fx:id="addComment" layoutX="756.0" layoutY="509.0" mnemonicParsing="false" onAction="#addComment" text="Add Commnet" />
+      <Button fx:id="addComment" layoutX="652.0" layoutY="509.0" mnemonicParsing="false" onAction="#addComment" text="Add Comment" />
       <Label fx:id="ticketTitle" layoutX="31.0" layoutY="51.0" prefHeight="38.0" prefWidth="929.0" text="Ticket Title:">
          <font>
             <Font size="26.0" />
          </font>
       </Label>
-      <Label fx:id="ticketID" layoutX="31.0" layoutY="89.0" prefHeight="36.0" prefWidth="929.0" text="Ticket ID:">
+      <Label fx:id="ticketID" layoutX="31.0" layoutY="89.0" prefHeight="36.0" prefWidth="769.0" text="Ticket ID:">
          <font>
             <Font size="25.0" />
          </font>
       </Label>
+      <Button fx:id="refreshButton" layoutX="894.0" layoutY="89.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="44.0" prefWidth="66.0" text="Refresh" />
+      <Button fx:id="deleteCommentButton" layoutX="855.0" layoutY="509.0" mnemonicParsing="false" onAction="#handleDeleteComment" text="Delete Comment" />
+      <Button fx:id="clearButton" layoutX="822.0" layoutY="89.0" mnemonicParsing="false" onAction="#handleClear" prefHeight="44.0" prefWidth="66.0" text="Clear All" />
    </children>
 </AnchorPane>
