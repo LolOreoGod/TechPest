@@ -272,4 +272,19 @@ public class DatabaseHelper {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	public static void deleteComment(LocalDate date, String comment) {
+	    String sql = "DELETE FROM comments WHERE date = ? AND comment = ?";
+	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setString(1, date.toString());
+	        pstmt.setString(2, comment);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+	}
+
+
+
+
 }

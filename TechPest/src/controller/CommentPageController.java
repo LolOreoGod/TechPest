@@ -24,6 +24,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import projects.Comment;
@@ -59,10 +61,12 @@ public class CommentPageController implements Initializable {
 	
 	@FXML
 	private Button clearButton;
+	
+	@FXML
+	private ListView<String> commentsListView; 
 
 	private Stage stage;
 	private Scene scene;
-	private Ticket currentTicket;
 
     @FXML
     private ListView<String> ticketList;
@@ -82,6 +86,9 @@ public class CommentPageController implements Initializable {
         ticketTitle.setText(selectedTicket.getTitle());
         ticketID.setText(Integer.toString(selectedTicket.getId()));
         common.setCommentTable(CommentTable);
+        
+
+        
     }
 
 	@FXML
@@ -133,16 +140,32 @@ public class CommentPageController implements Initializable {
 	}
 	
 	@FXML
-	void handleDeleteComment() {
-		//TODO:
-		
+	void handleDeleteComment(ActionEvent event) {
+	    Comment selectedComment = CommentTable.getSelectionModel().getSelectedItem();
+
+	    if (selectedComment != null) {
+	        DatabaseHelper.deleteComment(selectedComment.getDate(), selectedComment.getComments());
+	        refreshCommentTable();
+	    } else {
+	        // No comment selected, show a message or handle accordingly
+	        System.out.println("No comment selected");
+	    }
 	}
+
+	// Add this method to refresh the CommentTable after deleting a comment
+	private void refreshCommentTable() {
+	    List<Comment> allComments = DatabaseHelper.getAllComments();
+	    ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(allComments);
+	    CommentTable.setItems(observableCommentList);
+	}
+
 	
 	@FXML
 	void handleClear() {
 		DatabaseHelper.clearCommentsTable();
 		refreshTable();
 	}
+	
 	private void refreshTable() {
 		List<Comment> commentList = DatabaseHelper.getAllComments();
 		ObservableList<Comment> observableList = FXCollections.observableArrayList(commentList);
