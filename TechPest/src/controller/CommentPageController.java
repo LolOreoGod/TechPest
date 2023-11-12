@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 import application.CommonObjs;
 import application.DatabaseHelper;
 import application.Main;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -79,29 +80,28 @@ public class CommentPageController implements Initializable {
         DateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
 
-        
-        
-        //Retrieving ticket info from common object
+        // Retrieving ticket info from common object
         selectedTicket = common.getSelectedTicket();
         ticketTitle.setText(selectedTicket.getTitle());
         ticketID.setText(Integer.toString(selectedTicket.getId()));
         common.setCommentTable(CommentTable);
-        
-     // Add a listener to the dropdown to fetch tickets related to the selected
-     		// project
-        
-     			
-     	this.commentList = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
 
-		if (this.commentList == null) {
-			// Handle the case when there's an error fetching tickets
-			return;
-		}
+        // Fetch comments for the selected ticket
+        this.commentList = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
 
-		//List<Comment> allComments = DatabaseHelper.getAllComments();
-	    ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(this.commentList);
-	    CommentTable.setItems(observableCommentList);
+        if (this.commentList == null) {
+            // Handle the case when there's an error fetching comments
+            return;
+        }
+
+        Platform.runLater(() -> {
+            ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(this.commentList);
+            CommentTable.setItems(observableCommentList);
+            CommentTable.refresh();
+        });
+
     }
+
 
 	@FXML
 	void addComment(ActionEvent event) {

@@ -198,24 +198,25 @@ public class DatabaseHelper {
 	}
 
 	public static List<Comment> getCommentsForTicket(int ticketId) {
-		List<Comment> commentList = new ArrayList<>();
-		String selectQuery = "SELECT * FROM comments WHERE ticketID = ?";
+	    List<Comment> commentList = new ArrayList<>();
+	    String selectQuery = "SELECT * FROM comments WHERE ticketID = ?";
 
-		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
-			pstmt.setInt(1, ticketId);
-			ResultSet rs = pstmt.executeQuery();
+	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+	        pstmt.setInt(1, ticketId);
+	        ResultSet rs = pstmt.executeQuery();
 
-			while (rs.next()) {
-				LocalDate date = LocalDate.parse(rs.getString("date"));
-				String description = rs.getString("description"); // Adjusted to match the column name in the database
-				Comment comment = new Comment(date, description); // Adjusted to use 'description' instead of 'comments'
-				commentList.add(comment);
-			}
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
-		return commentList;
+	        while (rs.next()) {
+	            LocalDate date = LocalDate.parse(rs.getString("date"));
+	            String comment = rs.getString("comment"); // Adjusted to match the column name in the database
+	            Comment commentObject = new Comment(date, comment);
+	            commentList.add(commentObject);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+	    return commentList;
 	}
+
 
 	// Delete all entries from the 'projects' table
 	public static void clearProjectTable() {
@@ -241,18 +242,19 @@ public class DatabaseHelper {
 		}
 	}
 
-	// Insert a new comment into the 'comments' table for a specific ticket
-	public static void insertComment(LocalDate date, String comment) {
-		String sql = "INSERT INTO comments (date, comment) VALUES (?, ?)";
+	public static void insertComment(int ticketId, LocalDate date, String comment) {
+	    String sql = "INSERT INTO comments (ticketID, date, comment) VALUES (?, ?, ?)";
 
-		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-			pstmt.setString(1, date.toString()); // Modified to convert LocalDate to String directly
-			pstmt.setString(2, comment);
-			pstmt.executeUpdate();
-		} catch (SQLException e) {
-			System.out.println(e.getMessage());
-		}
+	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+	        pstmt.setInt(1, ticketId);
+	        pstmt.setString(2, date.toString()); // Modified to convert LocalDate to String directly
+	        pstmt.setString(3, comment);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
 	}
+
 
 	// Delete all entries from the 'tickets' table
 	public static void clearTicketsTable() {

@@ -134,10 +134,6 @@ public class ViewTicketsController implements Initializable {
 			}
 		
 
-		TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
-		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
-
 		ObservableList<Ticket> projectTicketsObservableList = FXCollections.observableArrayList(this.ticketList);
 		ticketsTableView.setItems(projectTicketsObservableList);
 		ticketsTableView.refresh();

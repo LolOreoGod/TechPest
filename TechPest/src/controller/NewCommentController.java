@@ -105,30 +105,34 @@ public class NewCommentController implements Initializable{
     }
 
     @FXML
-    public void submit() throws IOException {
-    	//NOTE THAT SINCE DATE IS SET TO A STRING,
-        //WE MUST CONVERT IT BACK TO A LOCALDATE TO STORE IN DATABASE
+    public void submit(ActionEvent event) {
+    	if (ticketDropBox.getSelectionModel().getSelectedItem() == null || commentDesc.getText().isEmpty()) {
+			showError.setText("All fields must be filled!");
+			return;
+		}
+    	String ticketName = ticketDropBox.getSelectionModel().getSelectedItem();
         LocalDate date = LocalDate.parse(commentDate.getText(), formatter);
         String comment = commentDesc.getText();
-
+        
+        int projectId = allTickets.stream().filter(ticket -> ticket.getTitle().equals(ticketName)).findFirst()
+				.map(Ticket::getId).orElse(-1);
+        
         if (ticketDropBox.getSelectionModel().getSelectedItem() == null || comment.isEmpty()) {
             showError.setText("All fields must be filled!");
             return;
         }
 
-        // Create the comments table if it doesn't exist
-        DatabaseHelper.createNewCommentTable();
-        // Use the DatabaseHelper class to insert the new comment into the database
-        DatabaseHelper.insertComment(date, comment);
+		try {
+			// Insert the new ticket into the database
+			System.out.println("inserted");
+			DatabaseHelper.insertComment(projectId, date, comment);
+			showError.setText("Comment successfully added!");
+		} catch (Exception e) {
+			showError.setText("Error adding the ticket: " + e.getMessage());
+			e.printStackTrace(); // This line prints the full stack trace for debugging.
+		}
 
-        ExistenceProjectController.setClosable(true);
-        
-        //take last record from database and add it to table
-        
-        
-
-        Stage stage = (Stage) submit.getScene().getWindow();
-        stage.close();
+		back(event);
         
         
     }
