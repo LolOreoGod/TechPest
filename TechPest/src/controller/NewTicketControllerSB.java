@@ -53,7 +53,6 @@ public class NewTicketControllerSB {
 	// Class variable to store the projects
 	private List<Project> allProjects;
 
-	private List<Comment> comments;
 
 	@FXML
 	public void initialize() {
@@ -83,34 +82,43 @@ public class NewTicketControllerSB {
 
 	@FXML
 	private void submit(ActionEvent event) {
-		if (projectDropdown.getSelectionModel().getSelectedItem() == null || ticketTitleInput.getText().isEmpty()
-				|| ticketDesc.getText().isEmpty()) {
-			showError.setText("All fields must be filled!");
-			return;
-		}
-		String projectName = projectDropdown.getSelectionModel().getSelectedItem();
-		String ticketTitle = ticketTitleInput.getText();
-		String description = ticketDesc.getText();
+	    if (projectDropdown.getSelectionModel().getSelectedItem() == null || ticketTitleInput.getText().isEmpty()
+	            || ticketDesc.getText().isEmpty()) {
+	        showError.setText("All fields must be filled!");
+	        return;
+	    }
 
-		// Get the project ID by its name directly from the stored projects
-		int projectId = allProjects.stream().filter(project -> project.getName().equals(projectName)).findFirst()
-				.map(Project::getId).orElse(-1);
+	    String projectName = projectDropdown.getSelectionModel().getSelectedItem();
+	    String ticketTitle = ticketTitleInput.getText();
+	    String description = ticketDesc.getText();
 
-		if (projectId == -1) {
-			showError.setText("Error fetching project ID!");
-			return;
-		}
+	    // Get the project by its name directly from the stored projects
+	    Project selectedProject = allProjects.stream()
+	            .filter(project -> project.getName().equals(projectName))
+	            .findFirst()
+	            .orElse(null);
 
-		try {
-			// Insert the new ticket into the database
-			System.out.println("inserted");
-			DatabaseHelper.insertTicket(projectId, ticketTitle, description);
-			showError.setText("Ticket successfully added!");
-		} catch (Exception e) {
-			showError.setText("Error adding the ticket: " + e.getMessage());
-			e.printStackTrace(); // This line prints the full stack trace for debugging.
-		}
+	    if (selectedProject == null) {
+	        showError.setText("Error fetching project!");
+	        return;
+	    }
+	    int id = 0;
+		// Create a new Ticket object
+	    Ticket newTicket = new Ticket(id, ticketTitle, description);
 
-		back(event);
+	    newTicket.setId(id);
+	    newTicket.setTitle(ticketTitle);
+	    newTicket.setDescription(description);
+
+	    try {
+	        // Insert the new ticket into the database
+	        DatabaseHelper.insertTicket(newTicket, selectedProject);
+	        showError.setText("Ticket successfully added!");
+	    } catch (Exception e) {
+	        showError.setText("Error adding the ticket: " + e.getMessage());
+	        e.printStackTrace(); // This line prints the full stack trace for debugging.
+	    }
+
+	    back(event);
 	}
 }

@@ -93,7 +93,7 @@ public class ViewTicketsController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		allProjects = DatabaseHelper.getAllProjects();
 		
-		TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+		//TicketIDColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 		TicketName.setCellValueFactory(new PropertyValueFactory<>("title"));
 		TicketDescription.setCellValueFactory(new PropertyValueFactory<>("description"));
 		List<Ticket> list = DatabaseHelper.getAllTickets();
@@ -189,29 +189,46 @@ public class ViewTicketsController implements Initializable {
 	
 	
 	@FXML
-    void handleSearchAction(ActionEvent event) {
-        String searchText = searchField.getText().toLowerCase();
- 
-        if (searchText.isEmpty() && projectDropdown.getSelectionModel().isEmpty()) {
-            fullRefreshTable();
-            return;
-        }
-        //Within the list of filtered tickets (by project)
-        //We filter for search by ticket name
-        List<Ticket> filteredTickets = ticketList.stream()
-                .filter(ticket -> ticket.getTitle().toLowerCase().contains(searchText))
-                .collect(Collectors.toList());
-        ObservableList<Ticket> observableList = FXCollections.observableArrayList(filteredTickets);
-        //TODO: Filter for search by project name as well
+	void handleSearchAction(ActionEvent event) {
+	    String searchText = searchField.getText().toLowerCase();
+	    String selectedProject = projectDropdown.getSelectionModel().getSelectedItem();
 
-        if (observableList.isEmpty()) {
-            ticketsTableView.setPlaceholder(new Label("No projects found with the search term."));
-        } else {
-            ticketsTableView.setPlaceholder(new Label("")); 
-        }
+	    if (searchText.isEmpty() && (selectedProject == null || selectedProject.isEmpty())) {
+	        fullRefreshTable();
+	        return;
+	    }
 
-        ticketsTableView.setItems(observableList);
-    }
+	    List<Ticket> filteredTickets = ticketList.stream()
+	            .filter(ticket -> ticket.getTitle().toLowerCase().contains(searchText))
+	            .collect(Collectors.toList());
+
+	    if (selectedProject != null && !selectedProject.isEmpty()) {
+	        // Filter tickets based on the selected project
+	        int projectId = allProjects.stream()
+	                .filter(project -> project.getName().equals(selectedProject))
+	                .map(Project::getId)
+	                .findFirst()
+	                .orElse(-1);
+
+	        if (projectId != -1) {
+	            filteredTickets = filteredTickets.stream()
+	                    .filter(ticket -> ticket.getId() == projectId)
+	                    .collect(Collectors.toList());
+	        }
+	    }
+
+	    ObservableList<Ticket> observableList = FXCollections.observableArrayList(filteredTickets);
+
+	    if (observableList.isEmpty()) {
+	        ticketsTableView.setPlaceholder(new Label("No tickets found with the search term."));
+	    } else {
+	        ticketsTableView.setPlaceholder(new Label(""));
+	    }
+
+	    ticketsTableView.setItems(observableList);
+	}
+
+
 	
 	private void refreshTable() {
 		//refresh, with respect to project selection
@@ -233,4 +250,27 @@ public class ViewTicketsController implements Initializable {
 		projectDropdown.getSelectionModel().clearSelection();
 		fullRefreshTable();
 	}
+	
+    @FXML
+    void handleDeleteTicket(ActionEvent event) {
+        // Assuming you have a TableView named ticketTable
+        Ticket selectedTicket = ticketsTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedTicket != null) {
+            int projectId = selectedTicket.getId(); 
+            int ticketId = selectedTicket.getId();
+            String title = selectedTicket.getTitle();
+            String description = selectedTicket.getDescription();
+
+            // Call the deleteTicket method to delete the selected ticket from the database
+            DatabaseHelper.deleteTicket(projectId, ticketId, title, description);
+
+            // Remove the selected ticket from the TableView
+            ticketsTableView.getItems().remove(selectedTicket);
+        } else {
+            // Handle the case where no ticket is selected
+            System.out.println("Please select a ticket to delete.");
+        }
+    }
+
 }

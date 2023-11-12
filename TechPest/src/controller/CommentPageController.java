@@ -101,7 +101,6 @@ public class CommentPageController implements Initializable {
 			stage.setScene(new Scene(root, 600, 600));
 			stage.initStyle(StageStyle.UTILITY);
 			stage.show();
-			//TODO: add window close guard here
 			stage.setOnCloseRequest(e -> Main.setClosable(true));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,7 +146,6 @@ public class CommentPageController implements Initializable {
 	        DatabaseHelper.deleteComment(selectedComment.getDate(), selectedComment.getComments());
 	        refreshCommentTable();
 	    } else {
-	        // No comment selected, show a message or handle accordingly
 	        System.out.println("No comment selected");
 	    }
 	}
