@@ -68,8 +68,10 @@ public class CommentPageController implements Initializable {
 	private Stage stage;
 	private Scene scene;
 
-    @FXML
-    private ListView<String> ticketList;
+    //@FXML
+    //private ListView<String> ticketList;
+    
+    private List<Comment> commentList;
     private CommonObjs common = CommonObjs.getInstance();
     private Ticket selectedTicket; // newly added field
 
@@ -77,9 +79,7 @@ public class CommentPageController implements Initializable {
         DateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
 
-        List<Comment> allComments = DatabaseHelper.getAllComments();
-        ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(allComments);
-        CommentTable.setItems(observableCommentList);
+        
         
         //Retrieving ticket info from common object
         selectedTicket = common.getSelectedTicket();
@@ -87,8 +87,20 @@ public class CommentPageController implements Initializable {
         ticketID.setText(Integer.toString(selectedTicket.getId()));
         common.setCommentTable(CommentTable);
         
-
+     // Add a listener to the dropdown to fetch tickets related to the selected
+     		// project
         
+     			
+     	this.commentList = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
+
+		if (this.commentList == null) {
+			// Handle the case when there's an error fetching tickets
+			return;
+		}
+
+		//List<Comment> allComments = DatabaseHelper.getAllComments();
+	    ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(this.commentList);
+	    CommentTable.setItems(observableCommentList);
     }
 
 	@FXML
@@ -101,6 +113,7 @@ public class CommentPageController implements Initializable {
 			stage.setScene(new Scene(root, 600, 600));
 			stage.initStyle(StageStyle.UTILITY);
 			stage.show();
+			//TODO: add window close guard here
 			stage.setOnCloseRequest(e -> Main.setClosable(true));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -146,6 +159,7 @@ public class CommentPageController implements Initializable {
 	        DatabaseHelper.deleteComment(selectedComment.getDate(), selectedComment.getComments());
 	        refreshCommentTable();
 	    } else {
+	        // No comment selected, show a message or handle accordingly
 	        System.out.println("No comment selected");
 	    }
 	}

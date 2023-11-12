@@ -227,33 +227,19 @@ public class DatabaseHelper {
 		}
 	}
 
-	public static void insertTicket(Ticket ticket, Project project) {
-	    String sql = "INSERT INTO tickets(projectId, id, title, description) VALUES(?,?,?,?)";
+	// Insert a new ticket into the 'tickets' table for a specific project
+	public static void insertTicket(int projectId, String title, String description) {
+		String sql = "INSERT INTO tickets(projectId, title, description) VALUES(?,?,?)";
 
-	    try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, project.getId());
-	        pstmt.setInt(2, ticket.getId());
-	        pstmt.setString(3, ticket.getTitle());
-	        pstmt.setString(4, ticket.getDescription());
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, projectId);
+			pstmt.setString(2, title);
+			pstmt.setString(3, description);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
-    public static void deleteTicket(int projectId, int ticketId, String title, String description) {
-        String sql = "DELETE FROM tickets WHERE projectId = ? AND id = ? AND title = ? AND description = ?";
-
-        try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, projectId);
-            pstmt.setInt(2, ticketId);
-            pstmt.setString(3, title);
-            pstmt.setString(4, description);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
 
 	// Insert a new comment into the 'comments' table for a specific ticket
 	public static void insertComment(LocalDate date, String comment) {
@@ -286,7 +272,7 @@ public class DatabaseHelper {
 			System.out.println(e.getMessage());
 		}
 	}
-
+	
 	public static void deleteComment(LocalDate date, String comment) {
 	    String sql = "DELETE FROM comments WHERE date = ? AND comment = ?";
 	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -297,5 +283,8 @@ public class DatabaseHelper {
 	        System.out.println(e.getMessage());
 	    }
 	}
+
+
+
 
 }
