@@ -3,6 +3,7 @@ package controller;
 import application.CommonObjs;
 import application.DatabaseHelper;
 import application.Main;
+import projects.Comment;
 import projects.Project;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+
+
+//new added
+import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
+import javafx.scene.layout.HBox;
+import java.io.IOException;
+import javafx.stage.Modality;
 
 public class ExistenceProjectController implements Initializable {
 
@@ -57,7 +66,7 @@ public class ExistenceProjectController implements Initializable {
 	private TableColumn<Project, String> StatusColumn;
 
 	@FXML
-	private TableColumn<Project, String> ActionsColumn;
+	private TableColumn<Project, Void> ActionsColumn;  //Changed here String to Void
 
 	@FXML
 	private Button newTicketButton;
@@ -98,7 +107,70 @@ public class ExistenceProjectController implements Initializable {
 				}
 			}
 		});
+		
+		setupActionsColumn(); //new line added
 	}
+	
+	
+	
+	
+	//new code
+	private void setupActionsColumn() {
+        ActionsColumn.setCellFactory(param -> new TableCell<Project, Void>() {
+            private final Button editButton = new Button("Edit");
+
+            {
+                editButton.setOnAction(event -> {
+                    Project project = getTableView().getItems().get(getIndex());
+                    handleEditAction(project);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
+    }
+
+
+
+	private void handleEditAction(Project project) {
+	    try {
+	        
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditProject.fxml"));
+	        Parent root = loader.load();
+
+	      
+	        EditProjectController editController = loader.getController();
+	        editController.setProject(project);
+
+	        
+	        Stage stage = new Stage();
+	        stage.setScene(new Scene(root));
+	        stage.setTitle("Edit Project");
+	        stage.initModality(Modality.APPLICATION_MODAL);
+	        
+	        
+	        stage.setOnHidden(event -> refreshTable());
+	        
+	       
+	        stage.showAndWait();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+
+
+
+
 	
 	@FXML
     void handleSearchAction(ActionEvent event) {
@@ -126,11 +198,14 @@ public class ExistenceProjectController implements Initializable {
     }
 
 	@FXML
-	void clearAll(ActionEvent event) {
-		DatabaseHelper.clearProjectTable();
-		DatabaseHelper.clearCommentsTable();
-		DatabaseHelper.clearTicketsTable();
-		refreshTable();
+	void deleteProject(ActionEvent event) {
+	    Project selectedProject = TableView.getSelectionModel().getSelectedItem();
+	    if(selectedProject != null) {
+		    DatabaseHelper.deleteProjectCascade(selectedProject);
+			refreshTable();
+	    }else {
+	    	System.out.print("Please select a project");
+	    }
 	}
 
 	@FXML

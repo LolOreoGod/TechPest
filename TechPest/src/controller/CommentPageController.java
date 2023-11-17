@@ -146,7 +146,7 @@ public class CommentPageController implements Initializable {
 	void handleRefresh() {
 		System.out.println("table refreshed");
 		
-        List<Comment> allComments = DatabaseHelper.getAllComments();
+        List<Comment> allComments = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
         ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(allComments);
         CommentTable.setItems(observableCommentList);
 	}
@@ -166,7 +166,7 @@ public class CommentPageController implements Initializable {
 
 	// Add this method to refresh the CommentTable after deleting a comment
 	private void refreshCommentTable() {
-	    List<Comment> allComments = DatabaseHelper.getAllComments();
+	    List<Comment> allComments = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
 	    ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(allComments);
 	    CommentTable.setItems(observableCommentList);
 	}
@@ -175,12 +175,6 @@ public class CommentPageController implements Initializable {
 	@FXML
 	void handleClear() {
 		DatabaseHelper.clearCommentsTable();
-		refreshTable();
-	}
-	
-	private void refreshTable() {
-		List<Comment> commentList = DatabaseHelper.getAllComments();
-		ObservableList<Comment> observableList = FXCollections.observableArrayList(commentList);
-		CommentTable.setItems(observableList);
+		handleRefresh();
 	}
 }

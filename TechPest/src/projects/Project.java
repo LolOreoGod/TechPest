@@ -55,4 +55,16 @@ public class Project {
     public void setDate(LocalDate date) {
         this.date = date;
     }
+    
+ /*   public LocalDate getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public void setLastUpdated(LocalDate lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public void updateLastUpdatedDate() {
+        this.lastUpdated = LocalDate.now(); 
+    }*/
 }

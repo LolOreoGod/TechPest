@@ -245,4 +245,10 @@ public class ViewTicketsController implements Initializable {
 		projectDropdown.getSelectionModel().clearSelection();
 		fullRefreshTable();
 	}
+	
+    @FXML
+    void clearAll(ActionEvent event) {
+    	DatabaseHelper.clearTicketsTable();
+		refreshTable();
+    }
 }

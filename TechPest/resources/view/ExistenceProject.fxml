@@ -16,8 +16,8 @@
             <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="59.0" text="Action" />
             <TextField fx:id="searchField" promptText="Search..." HBox.hgrow="ALWAYS" />
             <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchAction" text="Search" />
-            <Button mnemonicParsing="false" onAction="#addComment" text="Add Comment" />
-            <Button mnemonicParsing="false" onAction="#clearAll" text="Clear All" />
+            <Button mnemonicParsing="false" text="Add Comment" />
+            <Button mnemonicParsing="false" onAction="#deleteProject" text="Delete Project " />
             <Button fx:id="newTicketButton" mnemonicParsing="false" onAction="#newTicket" text="New Ticket" />
          </children>
          <HBox.hgrow>
