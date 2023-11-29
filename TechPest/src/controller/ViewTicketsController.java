@@ -251,4 +251,16 @@ public class ViewTicketsController implements Initializable {
     	DatabaseHelper.clearTicketsTable();
 		refreshTable();
     }
+    
+    @FXML
+    void deleteTicket(ActionEvent event) {
+    	Ticket selectedTicket = ticketsTableView.getSelectionModel().getSelectedItem();
+    	if (selectedTicket != null) {
+    	    DatabaseHelper.deleteTicketCascade(selectedTicket);
+    	    refreshTable();
+    	} else {
+    	    System.out.print("Please select a ticket");
+    	}
+
+    }
 }

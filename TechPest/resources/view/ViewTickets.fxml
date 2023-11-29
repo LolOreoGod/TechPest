@@ -68,6 +68,7 @@
          <children>
             <Button fx:id="back" layoutX="29.0" layoutY="23.0" mnemonicParsing="false" onAction="#back" prefHeight="36.0" prefWidth="71.0" text="Back" />
             <Button layoutX="687.0" layoutY="23.0" mnemonicParsing="false" onAction="#clearAll" text="Clear All" />
+            <Button layoutX="611.0" layoutY="23.0" mnemonicParsing="false" onAction="#deleteTicket" text="Delete" />
          </children>
       </Pane>
    </bottom>

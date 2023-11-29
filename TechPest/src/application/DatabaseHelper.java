@@ -81,20 +81,16 @@ public class DatabaseHelper {
 		}
 	}
 
-    public static void createNewCommentTable() {
-    	String sql = "CREATE TABLE IF NOT EXISTS comments (" +
-    		    "date TEXT NOT NULL," +
-    		    "comment TEXT," +
-    		    "ticketId INTEGER," +
-    		    "FOREIGN KEY (ticketId) REFERENCES ticket(id)" +
-    		    ");";
+	public static void createNewCommentTable() {
+		String sql = "CREATE TABLE IF NOT EXISTS comments (" + "date TEXT NOT NULL," + "comment TEXT,"
+				+ "ticketId INTEGER," + "FOREIGN KEY (ticketId) REFERENCES ticket(id)" + ");";
 
-        try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-    }
+		try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
+			stmt.execute(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 	// Insert a new project into the 'projects' table
 	public static void insertProject(Project project) {
@@ -109,18 +105,16 @@ public class DatabaseHelper {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public static void deleteProject(Project project) {
-	    String sql = "DELETE FROM projects WHERE id = ?";
-	    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, project.getId());
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		String sql = "DELETE FROM projects WHERE id = ?";
+		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, project.getId());
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
-
-
 
 	// Retrieve all projects from the 'projects' table
 	public static List<Project> getAllProjects() {
@@ -166,26 +160,25 @@ public class DatabaseHelper {
 	}
 
 	public static List<Comment> getAllComments() {
-	    List<Comment> commentList = new ArrayList<>();
-	    String selectQuery = "SELECT * FROM Comments";
+		List<Comment> commentList = new ArrayList<>();
+		String selectQuery = "SELECT * FROM Comments";
 
-	    try (Connection conn = connectComments();
-	         Statement stmt = conn.createStatement();
-	         ResultSet rs = stmt.executeQuery(selectQuery)) {
-	        while (rs.next()) {
-	            String dateString = rs.getString("date");
-	            LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-	            String comments = rs.getString("comment"); // Adjusted the variable name to avoid conflict
-	            Comment comment = new Comment(date, comments); // Assuming there is a proper constructor in the Comment class
-	            commentList.add(comment);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
-	    return commentList;
+		try (Connection conn = connectComments();
+				Statement stmt = conn.createStatement();
+				ResultSet rs = stmt.executeQuery(selectQuery)) {
+			while (rs.next()) {
+				String dateString = rs.getString("date");
+				LocalDate date = LocalDate.parse(dateString, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+				String comments = rs.getString("comment"); // Adjusted the variable name to avoid conflict
+				Comment comment = new Comment(date, comments); // Assuming there is a proper constructor in the Comment
+																// class
+				commentList.add(comment);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return commentList;
 	}
-
-
 
 	// Retrieve all tickets related to a specific project
 	public static List<Ticket> getTicketsForProject(int selectedProjectId) {
@@ -210,62 +203,61 @@ public class DatabaseHelper {
 	}
 
 	public static List<Comment> getCommentsForTicket(int ticketId) {
-	    List<Comment> commentList = new ArrayList<>();
-	    String selectQuery = "SELECT * FROM comments WHERE ticketID = ?";
+		List<Comment> commentList = new ArrayList<>();
+		String selectQuery = "SELECT * FROM comments WHERE ticketID = ?";
 
-	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
-	        pstmt.setInt(1, ticketId);
-	        ResultSet rs = pstmt.executeQuery();
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(selectQuery)) {
+			pstmt.setInt(1, ticketId);
+			ResultSet rs = pstmt.executeQuery();
 
-	        while (rs.next()) {
-	            LocalDate date = LocalDate.parse(rs.getString("date"));
-	            String comment = rs.getString("comment"); // Adjusted to match the column name in the database
-	            Comment commentObject = new Comment(date, comment);
-	            commentList.add(commentObject);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
-	    return commentList;
+			while (rs.next()) {
+				LocalDate date = LocalDate.parse(rs.getString("date"));
+				String comment = rs.getString("comment"); // Adjusted to match the column name in the database
+				Comment commentObject = new Comment(date, comment);
+				commentList.add(commentObject);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return commentList;
 	}
-
 
 	public static void clearProjectTableCascade(int projectId) {
-	    // This method will delete the project along with its tickets and comments
+		// This method will delete the project along with its tickets and comments
 
-	    // Step 1: Delete comments associated with tickets of the project
-	    String deleteCommentsSql = "DELETE FROM comments WHERE ticketID = ?";
-	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(deleteCommentsSql)) {
-	        pstmt.setInt(1, projectId);
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		// Step 1: Delete comments associated with tickets of the project
+		String deleteCommentsSql = "DELETE FROM comments WHERE ticketID = ?";
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(deleteCommentsSql)) {
+			pstmt.setInt(1, projectId);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 
-	    // Step 2: Delete tickets of the project
-	    String deleteTicketsSql = "DELETE FROM tickets WHERE projectId = ?";
-	    try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(deleteTicketsSql)) {
-	        pstmt.setInt(1, projectId);
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		// Step 2: Delete tickets of the project
+		String deleteTicketsSql = "DELETE FROM tickets WHERE projectId = ?";
+		try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(deleteTicketsSql)) {
+			pstmt.setInt(1, projectId);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 
-	    // Step 3: Delete the project itself
-	    String deleteProjectSql = "DELETE FROM projects WHERE id = ?";
-	    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(deleteProjectSql)) {
-	        pstmt.setInt(1, projectId);
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		// Step 3: Delete the project itself
+		String deleteProjectSql = "DELETE FROM projects WHERE id = ?";
+		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(deleteProjectSql)) {
+			pstmt.setInt(1, projectId);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-	// Add a new method to delete a project along with its associated tickets and comments
+	// Add a new method to delete a project along with its associated tickets and
+	// comments
 	public static void deleteProjectCascade(Project project) {
-	    clearProjectTableCascade(project.getId());
+		clearProjectTableCascade(project.getId());
 	}
-
 
 	// Insert a new ticket into the 'tickets' table for a specific project
 	public static void insertTicket(int projectId, String title, String description) {
@@ -282,21 +274,20 @@ public class DatabaseHelper {
 	}
 
 	public static void insertComment(int ticketId, LocalDate date, String comment) {
-	    String sql = "INSERT INTO comments (ticketID, date, comment) VALUES (?, ?, ?)";
+		String sql = "INSERT INTO comments (ticketID, date, comment) VALUES (?, ?, ?)";
 
-	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setInt(1, ticketId);
-	        pstmt.setString(2, date.toString()); // Modified to convert LocalDate to String directly
-	        pstmt.setString(3, comment);
-	        pstmt.executeUpdate();
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setInt(1, ticketId);
+			pstmt.setString(2, date.toString()); // Modified to convert LocalDate to String directly
+			pstmt.setString(3, comment);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
-
 	public static void clearTicketsTable() {
-	    String sql = "DELETE FROM tickets";
+		String sql = "DELETE FROM tickets";
 		try (Connection conn = connectTickets(); Statement stmt = conn.createStatement()) {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -304,7 +295,6 @@ public class DatabaseHelper {
 		}
 	}
 
-	
 	public static void clearCommentsTable() {
 		String sql = "DELETE FROM comments";
 		try (Connection conn = connectComments(); Statement stmt = conn.createStatement()) {
@@ -313,65 +303,81 @@ public class DatabaseHelper {
 			System.out.println(e.getMessage());
 		}
 	}
-	
+
 	public static void deleteComment(LocalDate date, String comment) {
-	    String sql = "DELETE FROM comments WHERE date = ? AND comment = ?";
-	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setString(1, date.toString());
-	        pstmt.setString(2, comment);
+		String sql = "DELETE FROM comments WHERE date = ? AND comment = ?";
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+			pstmt.setString(1, date.toString());
+			pstmt.setString(2, comment);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void updateProject(Project project) {
+		String sql = "UPDATE projects SET name = ?, description = ?, date = ? WHERE id = ?";
+
+		try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, project.getName());
+			pstmt.setString(2, project.getDescription());
+			pstmt.setString(3, project.getDate().toString());
+			pstmt.setInt(4, project.getId());
+
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows > 0) {
+				System.out.println("Project updated successfully!");
+			} else {
+				System.out.println("No project was updated. Make sure the ID is correct!");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	public static void deleteTicketCascade(Ticket ticket) {
+	    if (ticket == null) {
+	        System.out.println("Ticket is null");
+	        return;
+	    }
+
+	    int ticketID = ticket.getId();
+
+	    String deleteCommentsSql = "DELETE FROM comments WHERE ticketID = ?";
+	    try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(deleteCommentsSql)) {
+	        pstmt.setInt(1, ticketID);
+	        pstmt.executeUpdate();
+	    } catch (SQLException e) {
+	        System.out.println(e.getMessage());
+	    }
+
+	    String deleteTicketsSql = "DELETE FROM tickets WHERE id = ?";
+	    try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(deleteTicketsSql)) {
+	        pstmt.setInt(1, ticketID);
 	        pstmt.executeUpdate();
 	    } catch (SQLException e) {
 	        System.out.println(e.getMessage());
 	    }
 	}
-	
 
 
 
-	public static void updateProject(Project project) {
-	    String sql = "UPDATE projects SET name = ?, description = ?, date = ? WHERE id = ?";
-
-	    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        
-	        pstmt.setString(1, project.getName());
-	        pstmt.setString(2, project.getDescription());
-	        pstmt.setString(3, project.getDate().toString()); 
-	        pstmt.setInt(4, project.getId()); 
-
-	        int affectedRows = pstmt.executeUpdate();
-	        if (affectedRows > 0) {
-	            System.out.println("Project updated successfully!");
-	        } else {
-	            System.out.println("No project was updated. Make sure the ID is correct!");
-	        }
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
-	}
-	
-	
-/*	public static void updateProject(Project project) {
-	    String sql = "UPDATE projects SET name = ?, description = ?, date = ?, lastUpdated = ? WHERE id = ?";
-
-	    try (Connection conn = connect(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
-	        pstmt.setString(1, project.getName());
-	        pstmt.setString(2, project.getDescription());
-	        pstmt.setString(3, project.getDate().toString());
-	        pstmt.setString(4, project.getLastUpdated().toString()); 
-	        pstmt.setInt(5, project.getId());
-
-	        int affectedRows = pstmt.executeUpdate();
-	        if (affectedRows > 0) {
-	            System.out.println("Project updated successfully!");
-	        } else {
-	            System.out.println("No project was updated. Make sure the ID is correct!");
-	        }
-	    } catch (SQLException e) {
-	        System.out.println(e.getMessage());
-	    }
-	}*/
-
-
-
+	/*
+	 * public static void updateProject(Project project) { String sql =
+	 * "UPDATE projects SET name = ?, description = ?, date = ?, lastUpdated = ? WHERE id = ?"
+	 * ;
+	 * 
+	 * try (Connection conn = connect(); PreparedStatement pstmt =
+	 * conn.prepareStatement(sql)) { pstmt.setString(1, project.getName());
+	 * pstmt.setString(2, project.getDescription()); pstmt.setString(3,
+	 * project.getDate().toString()); pstmt.setString(4,
+	 * project.getLastUpdated().toString()); pstmt.setInt(5, project.getId());
+	 * 
+	 * int affectedRows = pstmt.executeUpdate(); if (affectedRows > 0) {
+	 * System.out.println("Project updated successfully!"); } else {
+	 * System.out.println("No project was updated. Make sure the ID is correct!"); }
+	 * } catch (SQLException e) { System.out.println(e.getMessage()); } }
+	 */
 
 }
