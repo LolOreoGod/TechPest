@@ -34,7 +34,7 @@ public class Main extends Application {
 			DatabaseHelper.connectComments();
 
 			BorderPane root = (BorderPane) FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
-			Scene scene = new Scene(root, 800, 800);
+			Scene scene = new Scene(root, 500, 400);
 			// scene.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
 			primaryStage.setScene(scene);
 

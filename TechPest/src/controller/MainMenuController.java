@@ -48,7 +48,7 @@ public class MainMenuController {
 	// This method remains unchanged
 	public void showExistenceProject(ActionEvent event) {
 		try {
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ExistenceProject.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewProjects.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			stage = new Stage();
 			scene = new Scene(root, 1000, 600);

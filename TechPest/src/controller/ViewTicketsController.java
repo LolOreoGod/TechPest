@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,13 +22,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import projects.Comment;
 import projects.Project;
 import projects.Ticket;
@@ -63,6 +67,9 @@ public class ViewTicketsController implements Initializable {
 	
 	@FXML
 	private Button clearProjSelectionButton;
+	
+	@FXML
+	private TableColumn<Ticket, Void> ActionsColumn;
 
 	private List<Project> allProjects;
 	private List<Ticket> ticketList;
@@ -74,7 +81,7 @@ public class ViewTicketsController implements Initializable {
 	void back(ActionEvent event) {
 		try {
 			// does not open popup, just switches scene
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ExistenceProject.fxml"));
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewProjects.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
 			scene = new Scene(root, 1000, 600);
 			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -127,6 +134,7 @@ public class ViewTicketsController implements Initializable {
 
 			// Fetch all tickets related to the selected project ID
 			this.ticketList = DatabaseHelper.getTicketsForProject(projectId);
+			common.setSelectedProject(selectedProject);
 
 			if (this.ticketList == null) {
 				// Handle the case when there's an error fetching tickets
@@ -158,17 +166,20 @@ public class ViewTicketsController implements Initializable {
 				}
 			}
 		});
+		
+		setupActionsColumn();
 	}
 
 	private void viewComments(String ticketName, MouseEvent event) {
 
 		try {
+			common.setEditView(false);
 			Ticket selectedTicket = ticketsTableView.getSelectionModel().getSelectedItem();
 			common.setSelectedTicket(selectedTicket);
 			
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewComments.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
-			scene = new Scene(root, 1000, 600);
+			scene = new Scene(root);
 			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			stage.setScene(scene);
 			stage.setTitle("View Comment");
@@ -184,6 +195,52 @@ public class ViewTicketsController implements Initializable {
 
 	}
 	
+	private void setupActionsColumn() {
+        ActionsColumn.setCellFactory(param -> new TableCell<Ticket, Void>() {
+            private final Button editButton = new Button("Edit");
+
+            {
+                editButton.setOnAction(event -> {
+                    Ticket ticket = getTableView().getItems().get(getIndex());
+                    common.setSelectedTicket(ticket);
+                    handleEditAction(ticket);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
+    }
+	
+	private void handleEditAction(Ticket ticket) {
+	    try {
+	        
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditTicket.fxml"));
+	        Parent root = loader.load();
+	        
+	        
+	        
+	        Stage stage = new Stage();
+	        stage.setScene(new Scene(root));
+	        stage.setTitle("Edit Ticket");
+	        stage.initModality(Modality.APPLICATION_MODAL);
+	        
+	        
+	        stage.setOnHidden(event -> refreshTable());
+	        
+	       
+	        stage.showAndWait();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 	@FXML
     void handleSearchAction(ActionEvent event) {
@@ -210,8 +267,14 @@ public class ViewTicketsController implements Initializable {
         
         //For all the projects that we filtered, we must add each of their tickets into filtered tickets
         //This way, we can find tickets attributed to the project we search for
+        
+        
+        /*
+         * TODO: FIX DOUBLE COUNTING
+         */
         for(Project p : filteredProj) {
         	filteredTickets.addAll(DatabaseHelper.getTicketsForProject(p.getId()));
+        
         }
         
         ObservableList<Ticket> observableList = FXCollections.observableArrayList(filteredTickets);
@@ -227,9 +290,15 @@ public class ViewTicketsController implements Initializable {
 	
 	private void refreshTable() {
 		//refresh, with respect to project selection
-		ticketList = DatabaseHelper.getTicketsForProject(common.getSelectedProject().getId());
-		ObservableList<Ticket> observableList = FXCollections.observableArrayList(ticketList);
-		ticketsTableView.setItems(observableList);
+		if(common.getSelectedProject() != null) {
+			ticketList = DatabaseHelper.getTicketsForProject(common.getSelectedProject().getId());
+			ObservableList<Ticket> observableList = FXCollections.observableArrayList(ticketList);
+			ticketsTableView.setItems(observableList);
+		}
+		else {
+			fullRefreshTable();
+		}
+		
 	}
 	
 	//Fully refresh, disregarding project selection
@@ -243,6 +312,7 @@ public class ViewTicketsController implements Initializable {
 	@FXML
 	void handleClearProjSelection(ActionEvent Event) {
 		projectDropdown.getSelectionModel().clearSelection();
+		common.setSelectedProject(null);
 		fullRefreshTable();
 	}
 	
@@ -262,5 +332,26 @@ public class ViewTicketsController implements Initializable {
     	    System.out.print("Please select a ticket");
     	}
 
+    }
+    
+    @FXML
+    void handleNewTicket(ActionEvent event) {
+    	System.out.println("View ticket");
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewTicket.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			scene = new Scene(root);
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.setScene(scene);
+			stage.setTitle("New Ticket");
+			stage.show();
+			
+			refreshTable();
+			
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }

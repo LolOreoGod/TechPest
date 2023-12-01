@@ -8,10 +8,10 @@
 <AnchorPane fx:id="editProjectAnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.EditProjectController">
 
    <children>
-      <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" prefHeight="35.0" prefWidth="267.0" text=" Edit Project Name" />
-      <TextField fx:id="descriptionTextField" alignment="TOP_LEFT" layoutX="14.0" layoutY="130.0" maxWidth="-Infinity" minHeight="100.0" prefHeight="209.0" prefWidth="546.0" text=" Edit Project Description" />
-      <Button fx:id="saveButton" layoutX="14.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleSaveAction" text="Save" />  
-      <Button fx:id="cancelButton" layoutX="507.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleCancelAction" text="Cancel" />
+      <TextField fx:id="nameTextField" layoutX="14.0" layoutY="14.0" prefHeight="35.0" prefWidth="267.0" promptText="Edit Project Name" text=" Edit Project Name" />
+      <TextField fx:id="descriptionTextField" alignment="TOP_LEFT" layoutX="14.0" layoutY="130.0" maxWidth="-Infinity" minHeight="100.0" prefHeight="209.0" prefWidth="546.0" promptText=" Edit Project Description" text=" Edit Project Description" />
+      <Button fx:id="saveButton" layoutX="519.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleSaveAction" text="Save" />  
+      <Button fx:id="cancelButton" layoutX="14.0" layoutY="352.0" mnemonicParsing="false" onAction="#handleCancelAction" text="Cancel" />
       <DatePicker fx:id="projDatePicker" layoutX="14.0" layoutY="78.0" />
    </children>
 </AnchorPane>

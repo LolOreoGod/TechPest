@@ -15,10 +15,26 @@ public class CommonObjs {
 	private static CommonObjs commonObjs = new CommonObjs();
 	private Ticket selectedTicket;
 	private Project selectedProject;
+	private Comment selectedComment;
+
+	
+	
 	private TableView<Ticket> ticketTable;
 	private TableView<Project> projectTable;
 	private TableView<Comment> commentTable;
+	
+	//private Scene lastScene;
+	
+	//this determines where the back button leads to, in view comments
+	private boolean editView;
 
+	public boolean getEditView() {
+		return editView;
+	}
+	
+	public void setEditView(boolean editView) {
+		this.editView = editView;
+	}
 	
 	public TableView<Project> getProjectTable() {
 		return projectTable;
@@ -70,6 +86,14 @@ public class CommonObjs {
 
 	public void setSelectedProject(Project selectedProject) {
 		this.selectedProject = selectedProject;
+	}
+
+	public Comment getSelectedComment() {
+		return selectedComment;
+	}
+
+	public void setSelectedComment(Comment selectedComment) {
+		this.selectedComment = selectedComment;
 	}
 
 	

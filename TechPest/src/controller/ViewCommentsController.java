@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,24 +23,29 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import projects.Comment;
 import projects.Project;
 import projects.Ticket;
 
-public class CommentPageController implements Initializable {
+public class ViewCommentsController implements Initializable {
 	@FXML
 	private TableView<Comment> CommentTable;
 	@FXML
 	private TableColumn<Comment, LocalDate> DateColumn;
 	@FXML
 	private TableColumn<Comment, String> commentColumn;
+	
+	@FXML
+	private TableColumn<Comment, Void> ActionsColumn;
 	@FXML
 	private Button back;
 
@@ -68,6 +74,7 @@ public class CommentPageController implements Initializable {
 
 	private Stage stage;
 	private Scene scene;
+	
 
     //@FXML
     //private ListView<String> ticketList;
@@ -82,8 +89,8 @@ public class CommentPageController implements Initializable {
 
         // Retrieving ticket info from common object
         selectedTicket = common.getSelectedTicket();
-        ticketTitle.setText(selectedTicket.getTitle());
-        ticketID.setText(Integer.toString(selectedTicket.getId()));
+        ticketTitle.setText(ticketTitle.getText() + " " + selectedTicket.getTitle());
+        ticketID.setText(ticketID.getText() + " " +  Integer.toString(selectedTicket.getId()));
         common.setCommentTable(CommentTable);
 
         // Fetch comments for the selected ticket
@@ -99,9 +106,56 @@ public class CommentPageController implements Initializable {
             CommentTable.setItems(observableCommentList);
             CommentTable.refresh();
         });
+        
+        setupActionsColumn();
 
     }
+    private void setupActionsColumn() {
+        ActionsColumn.setCellFactory(param -> new TableCell<Comment, Void>() {
+            private final Button editButton = new Button("Edit");
 
+            {
+                editButton.setOnAction(event -> {
+                    Comment comment = getTableView().getItems().get(getIndex());
+                    common.setSelectedComment(comment);
+                    handleEditAction(comment);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(editButton);
+                }
+            }
+        });
+    }
+	
+	private void handleEditAction(Comment comment) {
+	    try {
+	        
+	    	FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/EditComment.fxml"));
+	        Parent root = loader.load();
+	        
+	        
+	        
+	        Stage stage = new Stage();
+	        stage.setScene(new Scene(root));
+	        stage.setTitle("Edit Comment");
+	        stage.initModality(Modality.APPLICATION_MODAL);
+	        
+	        
+	        stage.setOnHidden(event -> refreshCommentTable());
+	        
+	       
+	        stage.showAndWait();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 
 	@FXML
 	void addComment(ActionEvent event) {
@@ -125,16 +179,35 @@ public class CommentPageController implements Initializable {
 	void back(ActionEvent event) {
 		try {
 			// does not open popup, just switches scene
-			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
-			Parent root = (Parent) fxmlLoader.load();
-			scene = new Scene(root, 1000, 600);
-			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			stage.setScene(scene);
-			stage.setTitle("View Ticket");
-			stage.show();
+			
+			if(common.getEditView()) {
+		
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/EditTicket.fxml"));
+				Parent root = (Parent) fxmlLoader.load();
+				scene = new Scene(root);
+				stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				stage.setScene(scene);
+				stage.setTitle("Edit Ticket");
+				stage.show();
 
-			Main.setClosable(false);
-			stage.setOnCloseRequest(e -> Main.setClosable(true));
+				Main.setClosable(false);
+				stage.setOnCloseRequest(e -> Main.setClosable(true));
+				
+			}
+			
+			else {
+				FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
+				Parent root = (Parent) fxmlLoader.load();
+				scene = new Scene(root);
+				stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+				stage.setScene(scene);
+				stage.setTitle("View Ticket");
+				stage.show();
+
+				Main.setClosable(false);
+				stage.setOnCloseRequest(e -> Main.setClosable(true));
+			}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -42,14 +42,22 @@
                      </HBox.margin>
                   </TextField>
                   <Button fx:id="searchButton" mnemonicParsing="false" onAction="#handleSearchAction" prefHeight="25.0" prefWidth="53.0" text="Search" />
+                  <Button mnemonicParsing="false" onAction="#handleNewTicket" text="New Ticket">
+                     <HBox.margin>
+                        <Insets left="273.0" />
+                     </HBox.margin>
+                  </Button>
                </children></HBox>
-            <TableView fx:id="ticketsTableView" prefHeight="370.0" prefWidth="736.0">
+            <TableView fx:id="ticketsTableView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="370.0" prefWidth="740.0">
               <columns>
-                <TableColumn fx:id="TicketIDColumn" prefWidth="39.0" text="ID" />
-                <TableColumn fx:id="TicketName" prefWidth="110.0" text="Ticket Title" />
-                  <TableColumn fx:id="TicketDescription" prefWidth="482.0" text="Description" />
-                  <TableColumn minWidth="0.0" prefWidth="108.0" text="Last Updated" />
+                <TableColumn fx:id="TicketIDColumn" prefWidth="39.0" resizable="false" style="-fx-alignment: CENTER;" text="ID" />
+                <TableColumn fx:id="TicketName" prefWidth="110.0" resizable="false" text="Ticket Title" />
+                  <TableColumn fx:id="TicketDescription" prefWidth="429.0" resizable="false" text="Description" />
+                  <TableColumn fx:id="ActionsColumn" maxWidth="161.0" minWidth="0.0" prefWidth="161.0" resizable="false" sortable="false" style="-fx-alignment: CENTER;" text="Actions" />
               </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
             </TableView>
          </children>
       </VBox>
@@ -66,9 +74,9 @@
    <bottom>
       <Pane prefHeight="92.0" prefWidth="476.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="back" layoutX="29.0" layoutY="23.0" mnemonicParsing="false" onAction="#back" prefHeight="36.0" prefWidth="71.0" text="Back" />
-            <Button layoutX="687.0" layoutY="23.0" mnemonicParsing="false" onAction="#clearAll" text="Clear All" />
-            <Button layoutX="611.0" layoutY="23.0" mnemonicParsing="false" onAction="#deleteTicket" text="Delete" />
+            <Button fx:id="back" layoutX="29.0" layoutY="18.0" mnemonicParsing="false" onAction="#back" prefHeight="36.0" prefWidth="71.0" text="Back" />
+            <Button layoutX="350.0" layoutY="24.0" mnemonicParsing="false" onAction="#clearAll" text="Clear All Tickets" />
+            <Button layoutX="699.0" layoutY="18.0" mnemonicParsing="false" onAction="#deleteTicket" prefHeight="36.0" prefWidth="71.0" text="Delete" />
          </children>
       </Pane>
    </bottom>

@@ -1,11 +1,15 @@
 package controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import application.CommonObjs;
 import application.DatabaseHelper;
+import application.Main;
 import projects.Comment;
 import projects.Project;
 import projects.Ticket;
@@ -52,8 +58,11 @@ public class NewTicketControllerSB {
 
 	// Class variable to store the projects
 	private List<Project> allProjects;
+	private Scene scene;
+	private Stage stage;
 
-	private List<Comment> comments;
+	
+	private CommonObjs common = CommonObjs.getInstance();
 
 	@FXML
 	public void initialize() {
@@ -66,19 +75,47 @@ public class NewTicketControllerSB {
 			showError.setText("Error fetching projects from the database!");
 			return;
 		}
-
 		// Extract project names and sort them alphabetically
 		ObservableList<String> projectNames = FXCollections
 				.observableArrayList(allProjects.stream().map(Project::getName).sorted().collect(Collectors.toList()));
 
 		projectDropdown.setItems(projectNames);
+		
+		if(common.getSelectedProject() != null) {
+			projectDropdown.getSelectionModel().select(common.getSelectedProject().getName());
+		}
+		
+		projectDropdown.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			String selectedProjectName = newValue;
+			Project selectedProject = allProjects.stream()
+					.filter(project -> project.getName().equals(selectedProjectName)).findFirst().orElse(null);
+
+			common.setSelectedProject(selectedProject);
+			
+			
+
+		});
+		
 	}
 
 	@FXML
 	private void back(ActionEvent event) {
-		// Close the current window
-		Stage stage = (Stage) back.getScene().getWindow();
-		stage.close();
+		try {
+			// does not open popup, just switches scene
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			scene = new Scene(root);
+			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+			stage.setScene(scene);
+			stage.setTitle("View Projects");
+			stage.show();
+
+			Main.setClosable(false);
+			stage.setOnCloseRequest(e -> Main.setClosable(true));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	@FXML

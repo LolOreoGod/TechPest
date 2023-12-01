@@ -39,7 +39,7 @@ import javafx.scene.layout.HBox;
 import java.io.IOException;
 import javafx.stage.Modality;
 
-public class ExistenceProjectController implements Initializable {
+public class ViewProjectsController implements Initializable {
 
 	@FXML
 	private TextField searchField;
@@ -75,6 +75,9 @@ public class ExistenceProjectController implements Initializable {
 	
 	@FXML
 	private Button searchButton;
+	
+	@FXML
+	private Stage primaryStage;
 
 	private Stage stage;
 	private Scene scene;
@@ -122,6 +125,7 @@ public class ExistenceProjectController implements Initializable {
             {
                 editButton.setOnAction(event -> {
                     Project project = getTableView().getItems().get(getIndex());
+                    common.setSelectedProject(project);
                     handleEditAction(project);
                 });
             }
@@ -147,9 +151,7 @@ public class ExistenceProjectController implements Initializable {
 	        Parent root = loader.load();
 
 	      
-	        EditProjectController editController = loader.getController();
-	        editController.setProject(project);
-
+	        
 	        
 	        Stage stage = new Stage();
 	        stage.setScene(new Scene(root));
@@ -232,7 +234,8 @@ public class ExistenceProjectController implements Initializable {
 		TableView.setItems(observableList);
 	}
 
-	@FXML
+	/**
+	
 	public void newTicket() {
 		System.out.println("View ticket");
 		try {
@@ -250,6 +253,7 @@ public class ExistenceProjectController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	*/
 
 	public void viewTickets(String projName, Event event) {
 
@@ -259,7 +263,7 @@ public class ExistenceProjectController implements Initializable {
 			
 			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/ViewTickets.fxml"));
 			Parent root = (Parent) fxmlLoader.load();
-			scene = new Scene(root, 1000, 600);
+			scene = new Scene(root);
 			stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			stage.setScene(scene);
 			stage.setTitle("View Ticket");
@@ -275,14 +279,31 @@ public class ExistenceProjectController implements Initializable {
 
 	}
 
+	
+	
 	@FXML
-	private Stage primaryStage;
+	public void handleNewProject(ActionEvent event) {
+		try {
+			FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/NewProjectPageSB.fxml"));
+			Parent root = (Parent) fxmlLoader.load();
+			Stage stage = new Stage();
+			stage.setTitle("New Project");
+			stage.setScene(new Scene(root, 600, 600));
+			stage.initStyle(StageStyle.UTILITY);
+			stage.show();
+	
+			Main.setClosable(false);
+			stage.setOnCloseRequest(e-> Main.setClosable(true));
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void backToMain(ActionEvent event) {
 		try {
 			// does not open popup, just switches scene
 			BorderPane root = (BorderPane) FXMLLoader.load(getClass().getResource("/view/MainMenu.fxml"));
-			Scene scene = new Scene(root, 800, 800);
+			Scene scene = new Scene(root);
 			primaryStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 			primaryStage.setScene(scene);
 			primaryStage.show();

@@ -1,8 +1,12 @@
 package controller;
 
 import application.Main;
+import application.CommonObjs;
 import application.DatabaseHelper; // Importing DatabaseHelper class
 import projects.Project; // Importing the Project class
+import projects.Ticket;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -14,6 +18,7 @@ import javafx.scene.paint.Color; // Importing the Color class
 import javafx.stage.Stage;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public class NewProjectPageController {
 
@@ -34,6 +39,8 @@ public class NewProjectPageController {
 
     @FXML
     private Label showError; // Label to display error message
+    
+    private CommonObjs common = CommonObjs.getInstance();
 
     @FXML
     private void initialize() {
@@ -65,6 +72,12 @@ public class NewProjectPageController {
         // Use the DatabaseHelper class to insert the new project into the database
         DatabaseHelper.insertProject(newProject);
 
+        //Refresh table
+        List<Project> projectList = DatabaseHelper.getAllProjects();
+        ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
+		common.getProjectTable().setItems(observableList);
+        
+        
         Main.setClosable(true);
         Stage stage = (Stage) submit.getScene().getWindow();
         stage.close();

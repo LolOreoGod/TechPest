@@ -132,6 +132,10 @@ public class NewCommentController implements Initializable{
 			e.printStackTrace(); // This line prints the full stack trace for debugging.
 		}
 
+		List<Comment> allComments = DatabaseHelper.getCommentsForTicket(selectedTicket.getId());
+        ObservableList<Comment> observableCommentList = FXCollections.observableArrayList(allComments);
+        common.getCommentTable().setItems(observableCommentList);
+		
 		back(event);
         
         

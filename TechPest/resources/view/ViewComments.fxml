@@ -7,17 +7,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CommentPageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ViewCommentsController">
    <children>
       <TableView fx:id="CommentTable" layoutX="31.0" layoutY="146.0" prefHeight="339.0" prefWidth="929.0">
         <columns>
           <TableColumn fx:id="DateColumn" prefWidth="102.0" text="Date" />
             <TableColumn fx:id="commentColumn" prefWidth="733.0" text="Comments" />
+            <TableColumn fx:id="ActionsColumn" prefWidth="92.0" style="-fx-alignment: CENTER;" text="Actions" />
         </columns>
       </TableView>
-      <Button layoutX="753.0" layoutY="509.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="94.0" text="Edit Comment" />
-      <Button fx:id="back" layoutX="31.0" layoutY="509.0" mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="66.0" text="Back" />
-      <Button fx:id="addComment" layoutX="652.0" layoutY="509.0" mnemonicParsing="false" onAction="#addComment" text="Add Comment" />
+      <Button fx:id="back" layoutX="31.0" layoutY="504.0" mnemonicParsing="false" onAction="#back" prefHeight="36.0" prefWidth="66.0" text="Back" />
+      <Button fx:id="addComment" layoutX="785.0" layoutY="96.0" mnemonicParsing="false" onAction="#addComment" prefHeight="36.0" prefWidth="94.0" text="Add Comment" />
       <Label fx:id="ticketTitle" layoutX="31.0" layoutY="51.0" prefHeight="38.0" prefWidth="929.0" text="Ticket Title:">
          <font>
             <Font size="26.0" />
@@ -28,8 +28,8 @@
             <Font size="25.0" />
          </font>
       </Label>
-      <Button fx:id="refreshButton" layoutX="894.0" layoutY="89.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="44.0" prefWidth="66.0" text="Refresh" />
-      <Button fx:id="deleteCommentButton" layoutX="855.0" layoutY="509.0" mnemonicParsing="false" onAction="#handleDeleteComment" text="Delete Comment" />
-      <Button fx:id="clearButton" layoutX="822.0" layoutY="89.0" mnemonicParsing="false" onAction="#handleClear" prefHeight="44.0" prefWidth="66.0" text="Clear All" />
+      <Button fx:id="refreshButton" layoutX="894.0" layoutY="97.0" mnemonicParsing="false" onAction="#handleRefresh" prefHeight="36.0" prefWidth="66.0" text="Refresh" />
+      <Button fx:id="deleteCommentButton" layoutX="854.0" layoutY="504.0" mnemonicParsing="false" onAction="#handleDeleteComment" prefHeight="36.0" prefWidth="106.0" text="Delete Comment" />
+      <Button fx:id="clearButton" layoutX="427.0" layoutY="510.0" mnemonicParsing="false" onAction="#handleClear" prefHeight="25.0" prefWidth="146.0" text="Clear All Comments" />
    </children>
 </AnchorPane>

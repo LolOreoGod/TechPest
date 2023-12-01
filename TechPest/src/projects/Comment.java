@@ -3,7 +3,6 @@ package projects;
 import java.time.LocalDate;
 
 public class Comment {
-
 	private LocalDate date;
 	private String comments;
 
@@ -12,6 +11,8 @@ public class Comment {
 		this.comments = comments;
 	}
 
+
+	
 	public LocalDate getDate() {
 		return date;
 	}

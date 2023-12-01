@@ -138,7 +138,7 @@ public class DatabaseHelper {
 		return projectList;
 	}
 
-	// Retrieve all projects from the 'projects' table
+	// Retrieve all projects from the 'Tickets' table
 	public static List<Ticket> getAllTickets() {
 		List<Ticket> ticketList = new ArrayList<>();
 		String selectQuery = "SELECT * FROM Tickets";
@@ -330,6 +330,47 @@ public class DatabaseHelper {
 				System.out.println("Project updated successfully!");
 			} else {
 				System.out.println("No project was updated. Make sure the ID is correct!");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void updateTicket(Ticket ticket) {
+		String sql = "UPDATE tickets SET title = ?, description = ? WHERE id = ?";
+
+		try (Connection conn = connectTickets(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, ticket.getTitle());
+			pstmt.setString(2, ticket.getDescription());
+			pstmt.setInt(3, ticket.getId());
+
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows > 0) {
+				System.out.println("Ticket updated successfully!");
+			} else {
+				System.out.println("No ticket was updated. Make sure the ID is correct!");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void updateComment(Comment oldComment, Comment comment) {
+		String sql = "UPDATE comments SET date = ?, comment = ? WHERE comment = ?";
+
+		try (Connection conn = connectComments(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+			pstmt.setString(1, comment.getDate().toString());
+			pstmt.setString(2, comment.getComments());
+			//pstmt.setString(3, oldComment.getDate().toString());
+			pstmt.setString(3, oldComment.getComments());
+
+			int affectedRows = pstmt.executeUpdate();
+			if (affectedRows > 0) {
+				System.out.println("Comment updated successfully!");
+			} else {
+				System.out.println("No comment was updated.");
 			}
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
