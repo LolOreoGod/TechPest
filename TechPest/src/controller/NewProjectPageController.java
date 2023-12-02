@@ -75,7 +75,10 @@ public class NewProjectPageController {
         //Refresh table
         List<Project> projectList = DatabaseHelper.getAllProjects();
         ObservableList<Project> observableList = FXCollections.observableArrayList(projectList);
-		common.getProjectTable().setItems(observableList);
+        if(common.getProjectTable() != null) {
+        	common.getProjectTable().setItems(observableList);
+        }
+		
         
         
         Main.setClosable(true);
